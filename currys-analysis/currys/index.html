@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currys - LLM Competitive Analysis</title>
+    <!-- Load dependencies in correct order -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+    <script src="https://unpkg.com/recharts@2.7.2/umd/Recharts.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation breadcrumb -->
+    <div class="bg-gray-100 px-4 py-2">
+        <nav class="text-sm">
+            <a href="../" class="text-blue-600 hover:text-blue-800">← Back to Dashboard Selection</a>
+        </nav>
+    </div>
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Verify all dependencies loaded
+        console.log('React loaded:', typeof React !== 'undefined');
+        console.log('ReactDOM loaded:', typeof ReactDOM !== 'undefined');
+        console.log('PropTypes loaded:', typeof PropTypes !== 'undefined');
+        console.log('Recharts loaded:', typeof Recharts !== 'undefined');
+
+        if (typeof Recharts === 'undefined') {
+            document.getElementById('root').innerHTML = `
+                <div class="p-4 max-w-6xl mx-auto">
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <strong>Error:</strong> Recharts library failed to load.<br>
+                        <small>Check your internet connection and try refreshing the page.</small>
+                    </div>
+                </div>
+            `;
+        } else {
+            // Extract Recharts components
+            const {
+                BarChart,
+                Bar,
+                XAxis,
+                YAxis,
+                CartesianGrid,
+                Tooltip,
+                Legend,
+                ResponsiveContainer,
+                Cell,
+                PieChart,
+                Pie,
+                LineChart,
+                Line
+            } = Recharts;
+
+            const CompetitiveAnalysisDashboard = ({
+                clientName = "Client",
+                dataFile = "currys.json",
+                primaryColor = "#FF5722",
+                secondaryColor = "#3498db",
+                brandKeywords = ["currys", "curry"]
+            }) => {
+                const [data, setData] = useState(null);
+                const [loading, setLoading] = useState(true);
+                const [error, setError] = useState(null);
+                const [activeTab, setActiveTab] = useState('overview');
+                const [rawData, setRawData] = useState(null);
+
+                useEffect(() => {
+                    const fetchData = async () => {
+                        try {
+                            console.log('Fetching data from:', dataFile);
+                            const response = await fetch(dataFile);
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            const jsonData = await response.json();
+                        console.log('Data loaded successfully:', jsonData.length, 'entries');
+                        setRawData(jsonData);
+
+                            const processedData = processData(jsonData, brandKeywords);
+                            setData(processedData);
+                            setLoading(false);
+                        } catch (error) {
+                            console.error('Error fetching data:', error);
+                            setError(error.message);
+                            setLoading(false);
+                        }
+                    };
+
+                    fetchData();
+                }, [dataFile, brandKeywords]);
+
+                // Process the raw JSON data into visualization-friendly format
+                const processData = (rawData, keywords) => {
+                    // Create a dataset of all mentions
+                    const allMentions = [];
+
+                    rawData.forEach(item => {
+                        item.companies_mentioned.forEach(company => {
+                            allMentions.push({
+                                brand_name: company.brand_name,
+                                query: item.query,
+                                category: item.query_parent_class,
+                                provider: item.result_provider,
+                                snippet: company.text_snippet,
+                                position: item.companies_mentioned.findIndex(c => c.brand_name === company.brand_name) + 1,
+                                total_companies: item.companies_mentioned.length,
+                                normalized_position: (item.companies_mentioned.findIndex(c => c.brand_name === company.brand_name) + 1) / item.companies_mentioned.length
+                            });
+                        });
+                    });
+
+                    console.log('Processed mentions:', allMentions.length);
+
+                    // Count brand mentions
+                    const brandCounts = {};
+                    allMentions.forEach(mention => {
+                        brandCounts[mention.brand_name] = (brandCounts[mention.brand_name] || 0) + 1;
+                    });
+
+                    // Get top 15 brands
+                    const topBrands = Object.entries(brandCounts)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 15)
+                        .map(([brand, count]) => ({ brand, count }));
+
+                    // Get counts by category
+                    const categories = [...new Set(allMentions.map(m => m.category))];
+                    const brandsByCategory = {};
+
+                    categories.forEach(category => {
+                        const categoryMentions = allMentions.filter(m => m.category === category);
+                        const counts = {};
+
+                        categoryMentions.forEach(mention => {
+                            counts[mention.brand_name] = (counts[mention.brand_name] || 0) + 1;
+                        });
+
+                        brandsByCategory[category] = Object.entries(counts)
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 10)
+                            .map(([brand, count]) => ({ brand, count }));
+                    });
+
+                    // Get counts by provider
+                    const providers = [...new Set(allMentions.map(m => m.provider))];
+                    const brandsByProvider = {};
+
+                    providers.forEach(provider => {
+                        const providerMentions = allMentions.filter(m => m.provider === provider);
+                        const counts = {};
+
+                        providerMentions.forEach(mention => {
+                            counts[mention.brand_name] = (counts[mention.brand_name] || 0) + 1;
+                        });
+
+                        brandsByProvider[provider] = Object.entries(counts)
+                            .sort((a, b) => b[1] - a[1])
+                            .slice(0, 10)
+                            .map(([brand, count]) => ({ brand, count }));
+                    });
+
+                    // Get client positioning data (dynamic based on keywords)
+                    const clientPositions = allMentions
+                        .filter(m => keywords.some(keyword => m.brand_name.toLowerCase().includes(keyword.toLowerCase())))
+                        .map(m => ({
+                            provider: m.provider,
+                            category: m.category,
+                            query: m.query,
+                            position: m.position,
+                            total_companies: m.total_companies,
+                            normalized_position: m.normalized_position
+                        }));
+
+                    console.log('Client positions:', clientPositions);
+
+                    // Calculate average positioning
+                    const avgPosition = clientPositions.length > 0
+                        ? clientPositions.reduce((sum, pos) => sum + pos.position, 0) / clientPositions.length
+                        : 0;
+
+                    const avgNormalizedPosition = clientPositions.length > 0
+                        ? clientPositions.reduce((sum, pos) => sum + pos.normalized_position, 0) / clientPositions.length
+                        : 0;
+
+                    // Provider positioning
+                    const positionByProvider = {};
+
+                    clientPositions.forEach(pos => {
+                        if (!positionByProvider[pos.provider]) {
+                            positionByProvider[pos.provider] = [];
+                        }
+                        positionByProvider[pos.provider].push(pos.normalized_position);
+                    });
+
+                    const avgPositionByProvider = Object.entries(positionByProvider).map(([provider, positions]) => ({
+                        provider,
+                        avgPosition: positions.reduce((sum, pos) => sum + pos, 0) / positions.length
+                    }));
+
+                    // Identify key competitors
+                    const competitors = {};
+
+                    rawData.forEach(item => {
+                        const hasClient = item.companies_mentioned.some(comp =>
+                            keywords.some(keyword => comp.brand_name.toLowerCase().includes(keyword.toLowerCase()))
+                        );
+
+                        if (hasClient) {
+                            item.companies_mentioned.forEach(comp => {
+                                if (!keywords.some(keyword => comp.brand_name.toLowerCase().includes(keyword.toLowerCase()))) {
+                                    competitors[comp.brand_name] = (competitors[comp.brand_name] || 0) + 1;
+                                }
+                            });
+                        }
+                    });
+
+                    const topCompetitors = Object.entries(competitors)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10)
+                        .map(([brand, count]) => ({ brand, count }));
+
+                    return {
+                        topBrands,
+                        brandsByCategory,
+                        brandsByProvider,
+                        clientPositions,
+                        avgPosition,
+                        avgNormalizedPosition,
+                        avgPositionByProvider,
+                        topCompetitors,
+                        allMentions
+                    };
+                };
+
+                if (loading) {
+                    return <div className="p-4">Loading analysis data for {clientName}...</div>;
+                }
+
+                if (error) {
+                    return (
+                        <div className="p-4">
+                            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                <strong>Error loading data:</strong> {error}
+                            </div>
+                        </div>
+                    );
+                }
+
+                if (!data) {
+                    return <div className="p-4">Error loading data. Please check the console for details.</div>;
+                }
+
+                // Highlight client brand in charts (dynamic based on keywords)
+                const getBarColor = (entry) => {
+                    return brandKeywords.some(keyword => entry.brand.toLowerCase().includes(keyword.toLowerCase())) ? primaryColor : secondaryColor;
+                };
+
+                // Custom tooltip for bar charts
+                const CustomTooltip = ({ active, payload, label }) => {
+                    if (active && payload && payload.length) {
+                        return (
+                            <div className="bg-white p-2 border rounded shadow">
+                                <p className="font-bold">{payload[0].payload.brand}</p>
+                                <p>Mentions: {payload[0].value}</p>
+                            </div>
+                        );
+                    }
+                    return null;
+                };
+
+                // Format categories for better display
+                const formatCategory = (category) => {
+                    return category
+                        .split(' ')
+                        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                        .join(' ');
+                };
+
+                return (
+                    <div className="p-4 max-w-6xl mx-auto">
+                        <h1 className="text-2xl font-bold mb-4">{clientName} Competitive Analysis in LLM Responses</h1>
+                        <p className="mb-4">Analysis of how {clientName} appears in LLM responses to industry-related queries.</p>
+
+                        {/* Tab Navigation */}
+                        <div className="flex border-b mb-4">
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'overview' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('overview')}
+                            >
+                                Overview
+                            </button>
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'category' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('category')}
+                            >
+                                Category Analysis
+                            </button>
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'providers' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('providers')}
+                            >
+                                Provider Analysis
+                            </button>
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'positioning' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('positioning')}
+                            >
+                                Positioning Analysis
+                            </button>
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'archive' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('archive')}
+                            >
+                                Prompt Archive
+                            </button>
+                        </div>
+
+                        {/* Overview Tab */}
+                        {activeTab === 'overview' && (
+                            <div>
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Top 15 Most Mentioned Brands</h2>
+                                    <p className="mb-4 text-gray-600">Comparison of how often {clientName} is mentioned relative to competitors across all queries.</p>
+                                    <div className="h-96">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart
+                                                data={data.topBrands}
+                                                margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                                            >
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis
+                                                    dataKey="brand"
+                                                    angle={-45}
+                                                    textAnchor="end"
+                                                    height={70}
+                                                />
+                                                <YAxis />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <Bar dataKey="count" name="Mentions" fill={secondaryColor}>
+                                                    {data.topBrands.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
+                                                    ))}
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Key Insights</h2>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div className="bg-white p-4 rounded border shadow">
+                                            <h3 className="font-bold mb-2">{clientName} Presence in Results</h3>
+                                            <p>{clientName} appears in {data.clientPositions.length} out of {Math.max(...data.allMentions.map(m => m.total_companies), 0)} total company mentions.</p>
+                                            {data.avgPosition > 0 && (
+                                                <>
+                                                    <p>On average, {clientName} appears {data.avgPosition.toFixed(2)} in the list of mentioned companies.</p>
+                                                    <p>This positions {clientName} in the top {(data.avgNormalizedPosition * 100).toFixed(2)}% of mentioned brands.</p>
+                                                </>
+                                            )}
+                                        </div>
+                                        <div className="bg-white p-4 rounded border shadow">
+                                            <h3 className="font-bold mb-2">Top Competitors</h3>
+                                            <p>Based on co-occurrence with {clientName} in LLM responses:</p>
+                                            <ol className="list-decimal pl-5">
+                                                {data.topCompetitors.slice(0, 5).map((comp, idx) => (
+                                                    <li key={idx}>{comp.brand} ({comp.count} co-occurrences)</li>
+                                                ))}
+                                            </ol>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {data.topCompetitors.length > 0 && (
+                                    <div className="mb-8">
+                                        <h2 className="text-xl font-bold mb-2">Top 10 Competitors by Co-occurrence</h2>
+                                        <p className="mb-4 text-gray-600">Companies that appear most frequently in the same LLM responses as {clientName}</p>
+                                        <div className="h-80">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart
+                                                    data={data.topCompetitors}
+                                                    margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                                                >
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <XAxis
+                                                        dataKey="brand"
+                                                        angle={-45}
+                                                        textAnchor="end"
+                                                        height={70}
+                                                    />
+                                                    <YAxis />
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                    <Legend />
+                                                    <Bar dataKey="count" name="Co-occurrences" fill="#9b59b6" />
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Category Analysis Tab */}
+                        {activeTab === 'category' && (
+                            <div>
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Top Brands by Category</h2>
+                                    <p className="mb-4 text-gray-600">Comparison of {clientName} versus competitors across different product categories.</p>
+
+                                    {Object.entries(data.brandsByCategory).map(([category, brands]) => (
+                                        <div key={category} className="mb-8">
+                                            <h3 className="text-lg font-bold mb-2">{formatCategory(category)}</h3>
+                                            <div className="h-80">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <BarChart
+                                                        data={brands}
+                                                        margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                                                    >
+                                                        <CartesianGrid strokeDasharray="3 3" />
+                                                        <XAxis
+                                                            dataKey="brand"
+                                                            angle={-45}
+                                                            textAnchor="end"
+                                                            height={70}
+                                                        />
+                                                        <YAxis />
+                                                        <Tooltip content={<CustomTooltip />} />
+                                                        <Legend />
+                                                        <Bar dataKey="count" name="Mentions" fill="#2ecc71">
+                                                            {brands.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
+                                                            ))}
+                                                        </Bar>
+                                                    </BarChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Category Insights</h2>
+                                    <div className="bg-white p-4 rounded border shadow">
+                                        <h3 className="font-bold mb-2">{clientName} Category Presence</h3>
+                                        {data.clientPositions.length > 0 ? (
+                                            <>
+                                                <p>Categories where {clientName} is mentioned:</p>
+                                                <ul className="list-disc pl-5">
+                                                    {[...new Set(data.clientPositions.map(p => p.category))].map((category, idx) => (
+                                                        <li key={idx}>{formatCategory(category)}</li>
+                                                    ))}
+                                                </ul>
+                                            </>
+                                        ) : (
+                                            <p>{clientName} is not explicitly mentioned in category breakdowns.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Provider Analysis Tab */}
+                        {activeTab === 'providers' && (
+                            <div>
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Top Brands by Provider</h2>
+                                    <p className="mb-4 text-gray-600">How different LLM providers represent {clientName} and competitors.</p>
+
+                                    {Object.entries(data.brandsByProvider).map(([provider, brands]) => (
+                                        <div key={provider} className="mb-8">
+                                            <h3 className="text-lg font-bold mb-2">{provider}</h3>
+                                            <div className="h-80">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <BarChart
+                                                        data={brands}
+                                                        margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                                                    >
+                                                        <CartesianGrid strokeDasharray="3 3" />
+                                                        <XAxis
+                                                            dataKey="brand"
+                                                            angle={-45}
+                                                            textAnchor="end"
+                                                            height={70}
+                                                        />
+                                                        <YAxis />
+                                                        <Tooltip content={<CustomTooltip />} />
+                                                        <Legend />
+                                                        <Bar dataKey="count" name="Mentions" fill="#e74c3c">
+                                                            {brands.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
+                                                            ))}
+                                                        </Bar>
+                                                    </BarChart>
+                                                </ResponsiveContainer>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Provider Insights</h2>
+                                    <div className="bg-white p-4 rounded border shadow">
+                                        <h3 className="font-bold mb-2">{clientName} by Provider</h3>
+                                        {data.avgPositionByProvider.length > 0 ? (
+                                            <>
+                                                <p>Average position of {clientName} in results by provider:</p>
+                                                <div className="h-64">
+                                                    <ResponsiveContainer width="100%" height="100%">
+                                                        <BarChart
+                                                            data={data.avgPositionByProvider.map(item => ({
+                                                                provider: item.provider,
+                                                                position: +(item.avgPosition * 100).toFixed(2)
+                                                            }))}
+                                                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                                                        >
+                                                            <CartesianGrid strokeDasharray="3 3" />
+                                                            <XAxis dataKey="provider" />
+                                                            <YAxis label={{ value: 'Position Percentile (%)', angle: -90, position: 'insideLeft' }} />
+                                                            <Tooltip />
+                                                            <Legend />
+                                                            <Bar dataKey="position" name="Position (lower is better)" fill={primaryColor} />
+                                                        </BarChart>
+                                                    </ResponsiveContainer>
+                                                </div>
+                                                <p className="mt-2 text-gray-600">Lower values indicate {clientName} is mentioned earlier in results (better positioning).</p>
+                                            </>
+                                        ) : (
+                                            <p>No positioning data available for {clientName} across providers.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Positioning Analysis Tab */}
+                        {activeTab === 'positioning' && (
+                            <div>
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">{clientName} Positioning Analysis</h2>
+                                    <p className="mb-4 text-gray-600">Detailed analysis of {clientName}'s position in LLM responses.</p>
+
+                                    {data.clientPositions.length > 0 ? (
+                                        <div className="bg-white p-4 rounded border shadow mb-4">
+                                            <h3 className="font-bold mb-2">Positioning Details</h3>
+                                            <table className="w-full border-collapse">
+                                                <thead>
+                                                    <tr className="bg-gray-100">
+                                                        <th className="border p-2 text-left">Query</th>
+                                                        <th className="border p-2 text-left">Provider</th>
+                                                        <th className="border p-2 text-left">Category</th>
+                                                        <th className="border p-2 text-left">Position</th>
+                                                        <th className="border p-2 text-left">Total Companies</th>
+                                                        <th className="border p-2 text-left">Position %</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {data.clientPositions.map((pos, idx) => (
+                                                        <tr key={idx} className={idx % 2 === 0 ? 'bg-gray-50' : ''}>
+                                                            <td className="border p-2">{pos.query}</td>
+                                                            <td className="border p-2">{pos.provider}</td>
+                                                            <td className="border p-2">{formatCategory(pos.category)}</td>
+                                                            <td className="border p-2">{pos.position}</td>
+                                                            <td className="border p-2">{pos.total_companies}</td>
+                                                            <td className="border p-2">{(pos.normalized_position * 100).toFixed(2)}%</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    ) : (
+                                        <p>No positioning data available for {clientName}.</p>
+                                    )}
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                    <div className="bg-white p-4 rounded border shadow">
+                                        <h3 className="font-bold mb-2">Key Positioning Stats</h3>
+                                        {data.clientPositions.length > 0 ? (
+                                            <>
+                                                <p><strong>Average Position:</strong> {data.avgPosition.toFixed(2)} out of an average of {(data.allMentions.reduce((sum, m) => sum + m.total_companies, 0) / data.allMentions.length).toFixed(2)} companies</p>
+                                                <p><strong>Average Percentile:</strong> {(data.avgNormalizedPosition * 100).toFixed(2)}%</p>
+                                                <p className="mt-2 text-gray-600">Lower percentile indicates earlier mention (better positioning)</p>
+                                            </>
+                                        ) : (
+                                            <p>No positioning data available for {clientName}.</p>
+                                        )}
+                                    </div>
+
+                                    <div className="bg-white p-4 rounded border shadow">
+                                        <h3 className="font-bold mb-2">Provider Positioning</h3>
+                                        {data.avgPositionByProvider.length > 0 ? (
+                                            <ul className="list-disc pl-5">
+                                                {data.avgPositionByProvider.map((item, idx) => (
+                                                    <li key={idx}>
+                                                        <strong>{item.provider}:</strong> {(item.avgPosition * 100).toFixed(2)}% position
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        ) : (
+                                            <p>No provider positioning data available for {clientName}.</p>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="mb-8">
+                                    <h2 className="text-xl font-bold mb-2">Recommendations</h2>
+                                    <div className="bg-white p-4 rounded border shadow">
+                                        <h3 className="font-bold mb-2">Strategic Recommendations</h3>
+                                        <ul className="list-disc pl-5">
+                                            <li>Focus on enhancing visibility in the {data.clientPositions.length > 0 ?
+                                                [...new Set(data.clientPositions.map(p => p.category))].map(formatCategory).join(', ') :
+                                                'relevant'} categories where {clientName} is already mentioned.</li>
+                                            <li>Target content optimization for queries like "{data.clientPositions.length > 0 ?
+                                                data.clientPositions[0].query :
+                                                'industry-relevant queries'}" where {clientName} is already appearing.</li>
+                                            <li>Consider developing content focusing on competitor differentiation against {data.topCompetitors.length > 0 ?
+                                                data.topCompetitors.slice(0, 3).map(c => c.brand).join(', ') :
+                                                'major competitors'} who frequently co-occur with {clientName} in results.</li>
+                                            <li>Develop strategies to improve positioning in responses from {data.avgPositionByProvider.length > 0 ?
+                                                data.avgPositionByProvider.sort((a, b) => b.avgPosition - a.avgPosition)[0].provider :
+                                                'all providers'} where {clientName} currently has lower visibility.</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'archive' && (
+                            <div className="mb-8">
+                                <h2 className="text-xl font-bold mb-2">Prompt Archive</h2>
+                                {rawData && rawData.map((entry, idx) => (
+                                    <div key={idx} className={`p-4 mb-2 border rounded ${entry.companies_mentioned.some(c => c.brand_name.toLowerCase().startsWith(clientName.toLowerCase())) ? 'bg-yellow-100' : ''}`}>
+                                        <p><strong>Query:</strong> {entry.query}</p>
+                                        <p><strong>Timestamp:</strong> {new Date(entry.timestamp).toLocaleString()}</p>
+                                        <p><strong>Provider:</strong> {entry.result_provider}</p>
+                                        <details className="mt-2">
+                                            <summary className="cursor-pointer text-blue-600">Response</summary>
+                                            <pre className="whitespace-pre-wrap text-sm mt-1">{entry.response}</pre>
+                                        </details>
+                                    </div>
+                                ))}
+                                {!rawData && <p className="p-4">Loading prompts...</p>}
+                            </div>
+                        )}
+                        <div className="mt-8 text-gray-600 text-sm">
+                            <p>Analysis based on {data.allMentions.length} total brand mentions across {[...new Set(data.allMentions.map(m => m.query))].length} unique queries.</p>
+                            <p>Generated on {new Date().toLocaleDateString()}</p>
+                        </div>
+                    </div>
+                );
+            };
+
+            // Currys-specific configuration
+            const CurrysConfig = {
+                clientName: "Currys",
+                dataFile: "currys.json",
+                primaryColor: "#FF5722",
+                secondaryColor: "#3498db",
+                brandKeywords: ["currys", "curry"]
+            };
+
+            // Render the dashboard with Currys configuration
+            ReactDOM.render(
+                React.createElement(CompetitiveAnalysisDashboard, CurrysConfig),
+                document.getElementById('root')
+            );
+        }
+    </script>
+</body>
+
+</html>
