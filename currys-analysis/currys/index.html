@@ -78,6 +78,7 @@
                 const [loading, setLoading] = useState(true);
                 const [error, setError] = useState(null);
                 const [activeTab, setActiveTab] = useState('overview');
+                const [rawData, setRawData] = useState(null);
 
                 useEffect(() => {
                     const fetchData = async () => {
@@ -88,7 +89,8 @@
                                 throw new Error(`HTTP error! status: ${response.status}`);
                             }
                             const jsonData = await response.json();
-                            console.log('Data loaded successfully:', jsonData.length, 'entries');
+                        console.log('Data loaded successfully:', jsonData.length, 'entries');
+                        setRawData(jsonData);
 
                             const processedData = processData(jsonData, brandKeywords);
                             setData(processedData);
@@ -320,6 +322,12 @@
                                 onClick={() => setActiveTab('positioning')}
                             >
                                 Positioning Analysis
+                            </button>
+                            <button
+                                className={`px-4 py-2 ${activeTab === 'archive' ? 'border-b-2 border-blue-500 font-bold' : ''}`}
+                                onClick={() => setActiveTab('archive')}
+                            >
+                                Prompt Archive
                             </button>
                         </div>
 
@@ -634,6 +642,23 @@
                             </div>
                         )}
 
+                        {activeTab === 'archive' && (
+                            <div className="mb-8">
+                                <h2 className="text-xl font-bold mb-2">Prompt Archive</h2>
+                                {rawData && rawData.map((entry, idx) => (
+                                    <div key={idx} className={`p-4 mb-2 border rounded ${entry.companies_mentioned.some(c => c.brand_name.toLowerCase().startsWith(clientName.toLowerCase())) ? 'bg-yellow-100' : ''}`}>
+                                        <p><strong>Query:</strong> {entry.query}</p>
+                                        <p><strong>Timestamp:</strong> {new Date(entry.timestamp).toLocaleString()}</p>
+                                        <p><strong>Provider:</strong> {entry.result_provider}</p>
+                                        <details className="mt-2">
+                                            <summary className="cursor-pointer text-blue-600">Response</summary>
+                                            <pre className="whitespace-pre-wrap text-sm mt-1">{entry.response}</pre>
+                                        </details>
+                                    </div>
+                                ))}
+                                {!rawData && <p className="p-4">Loading prompts...</p>}
+                            </div>
+                        )}
                         <div className="mt-8 text-gray-600 text-sm">
                             <p>Analysis based on {data.allMentions.length} total brand mentions across {[...new Set(data.allMentions.map(m => m.query))].length} unique queries.</p>
                             <p>Generated on {new Date().toLocaleDateString()}</p>
