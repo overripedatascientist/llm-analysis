@@ -25,9 +25,22 @@ const DashboardWrapper: React.FC = () => {
   return <CompetitiveAnalysisDashboard config={config} />;
 };
 
+// Get the basename for the router
+const getBasename = () => {
+  if (process.env.NODE_ENV === 'development') {
+    return '/';
+  }
+  // In production, extract the pathname from PUBLIC_URL
+  if (process.env.PUBLIC_URL) {
+    const url = new URL(process.env.PUBLIC_URL);
+    return url.pathname;
+  }
+  return '/';
+};
+
 function App() {
   return (
-    <Router>
+    <Router basename={getBasename()}>
       <div className="App">
         <Routes>
           <Route path="/" element={<LandingPage />} />
