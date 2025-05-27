@@ -1,0 +1,28 @@
+{
+    "currys": {
+        "name": "Currys",
+        "data_file": "currys/currys.json",
+        "keywords": [
+            "currys",
+            "curry"
+        ],
+        "primary_color": "#FF5722",
+        "secondary_color": "#3498db",
+        "description": "Consumer Electronics Retailer",
+        "industry": "Electronics & Technology",
+        "analysis_focus": "UK electronics, home appliances, and computer queries"
+    },
+    "boux-avenue": {
+        "name": "Boux Avenue",
+        "data_file": "boux-avenue/boux-avenue.json",
+        "keywords": [
+            "boux avenue",
+            "boux"
+        ],
+        "primary_color": "#E91E63",
+        "secondary_color": "#673AB7",
+        "description": "Lingerie & Fashion",
+        "industry": "Fashion & Retail",
+        "analysis_focus": "Fashion, lingerie, and retail-related queries"
+    }
+}

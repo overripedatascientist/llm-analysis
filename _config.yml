@@ -1,0 +1,15 @@
+# GitHub Pages configuration
+plugins:
+  - jekyll-relative-links
+  
+relative_links:
+  enabled: true
+  collections: true
+  
+include:
+  - currys/
+  - boux-avenue/
+  
+# Site settings
+title: "LLM Competitive Analysis Dashboard"
+description: "Multi-client dashboard for analyzing brand presence in LLM responses"
