@@ -16,7 +16,8 @@ export const clients: Record<string, ClientConfig> = {
     currys: {
         id: 'currys',
         name: 'currys',
-        displayName: 'Currys',
+        // displayName: 'Currys',
+        displayName: 'Test Co.',
         description: 'Consumer Electronics & Tech Retail Analysis',
         category: 'Electronics',
         market: 'UK Retail',
