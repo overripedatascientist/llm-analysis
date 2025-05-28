@@ -1,9 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getAllClients } from '../config/clients';
 
 const LandingPage: React.FC = () => {
     const clients = getAllClients();
+    const navigate = useNavigate();
+
+    // Client passwords - in a real app, these would be stored securely
+    const clientPasswords: Record<string, string> = {
+        'currys': 'luminr-consumer-lecky-2025',
+        'boux-avenue': 'affordable-luxury-2025'
+    };
 
     const getClientStats = (clientId: string) => {
         // You can replace these with real data from your JSON files if needed
@@ -12,6 +19,16 @@ const LandingPage: React.FC = () => {
             'boux-avenue': '28 responses analyzed'
         };
         return stats[clientId] || 'Analysis available';
+    };
+
+    const handleViewAnalysis = (clientId: string) => {
+        const password = prompt(`Enter password for ${clients.find(c => c.id === clientId)?.displayName}:`);
+        
+        if (password === clientPasswords[clientId]) {
+            navigate(`/dashboard/${clientId}`);
+        } else if (password !== null) { // User didn't cancel
+            alert('Incorrect password. Please try again.');
+        }
     };
 
     return (
@@ -52,19 +69,19 @@ const LandingPage: React.FC = () => {
                                 </p>
                                 <div className="flex justify-between items-center">
                                     <span className="text-sm text-gray-500">{getClientStats(client.id)}</span>
-                                    <Link
-                                        to={`/dashboard/${client.id}`}
-                                        className="px-4 py-2 rounded transition-colors text-white"
+                                    <button
+                                        onClick={() => handleViewAnalysis(client.id)}
+                                        className="px-4 py-2 rounded transition-colors text-white cursor-pointer"
                                         style={{ backgroundColor: client.primaryColor }}
-                                        onMouseEnter={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                                        onMouseEnter={(e: React.MouseEvent<HTMLButtonElement>) => {
                                             e.currentTarget.style.backgroundColor = client.secondaryColor;
                                         }}
-                                        onMouseLeave={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                                        onMouseLeave={(e: React.MouseEvent<HTMLButtonElement>) => {
                                             e.currentTarget.style.backgroundColor = client.primaryColor;
                                         }}
                                     >
                                         View Analysis
-                                    </Link>
+                                    </button>
                                 </div>
                             </div>
                         </div>
