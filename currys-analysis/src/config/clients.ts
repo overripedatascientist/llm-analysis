@@ -38,6 +38,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#673AB7',
         brandKeywords: ['boux', 'boux avenue', 'bouxavenue', 'boux-avenue'],
         icon: 'fashion'
+    },
+    'adnoc': {
+        id: 'adnoc',
+        name: 'adnoc',
+        displayName: 'ADNOC',
+        description: 'Maximum Energy Emissions',
+        category: 'Energy',
+        market: 'UAE Energy',
+        dataFile: '/data/ADNOC.json',
+        primaryColor: '#FCCD00',
+        secondaryColor: '#1F52A7',
+        brandKeywords: ['adnoc', 'a.d.n.o.c.', 'Abu Dhabi National Oil Company', 'ADNOC Group'],
+        icon: 'oil-can'
     }
 };
 

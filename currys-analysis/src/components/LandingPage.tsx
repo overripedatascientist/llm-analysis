@@ -9,14 +9,16 @@ const LandingPage: React.FC = () => {
     // Client passwords - in a real app, these would be stored securely
     const clientPasswords: Record<string, string> = {
         'currys': 'luminr-consumer-lecky-2025',
-        'boux-avenue': 'affordable-luxury-2025'
+        'boux-avenue': 'affordable-luxury-2025',
+        'adnoc': 'oil-and-gas-2025',
     };
 
     const getClientStats = (clientId: string) => {
         // You can replace these with real data from your JSON files if needed
         const stats: Record<string, string> = {
             'currys': '34 total responses analyzed',
-            'boux-avenue': '28 responses analyzed'
+            'boux-avenue': '28 responses analyzed',
+            'adnoc': '45 responses analyzed'
         };
         return stats[clientId] || 'Analysis available';
     };

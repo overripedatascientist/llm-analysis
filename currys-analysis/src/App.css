@@ -36,3 +36,7 @@
     transform: rotate(360deg);
   }
 }
+
+.recharts-legend-wrapper {
+  bottom: 0px !important
+}

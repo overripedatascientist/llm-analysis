@@ -9,6 +9,7 @@ relative_links:
 include:
   - currys/
   - boux-avenue/
+  - adnoc/
   
 # Site settings
 title: "LLM Competitive Analysis Dashboard"
