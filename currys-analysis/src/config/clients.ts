@@ -47,7 +47,7 @@ export const clients: Record<string, ClientConfig> = {
         description: 'Maximum Energy Emissions',
         category: 'Energy',
         market: 'UAE Energy',
-        dataFile: '/data/ADNOC.json',
+        dataFile: '/data/adnoc.json',
         primaryColor: '#FCCD00',
         secondaryColor: '#1F52A7',
         brandKeywords: ['adnoc', 'a.d.n.o.c.', 'Abu Dhabi National Oil Company', 'ADNOC Group'],
