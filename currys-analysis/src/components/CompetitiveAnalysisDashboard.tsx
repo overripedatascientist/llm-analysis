@@ -353,7 +353,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                 <div className="bg-white p-4 rounded border shadow">
                                     <h3 className="font-bold mb-2">{config.displayName} Presence in Results</h3>
-                                    <p>{config.displayName} appears in {data.clientPositions.length} out of {Math.max(...data.allMentions.map(m => m.total_companies), 0)} total company mentions.</p>
+                                    <p>{config.displayName} appears in {data.clientPositions.length} out of {data.allMentions.length} ({((data.clientPositions.length / data.allMentions.length) * 100).toFixed(1)}%) total LLM responses.</p>
                                     {data.avgPosition > 0 && (
                                         <>
                                             <p>On average, {config.displayName} appears {data.avgPosition.toFixed(2)} in the list of mentioned companies.</p>
