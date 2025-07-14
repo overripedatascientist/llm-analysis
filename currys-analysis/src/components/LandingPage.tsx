@@ -11,6 +11,7 @@ const LandingPage: React.FC = () => {
         'currys': 'luminr-consumer-lecky-2025',
         'boux-avenue': 'affordable-luxury-2025',
         'adnoc': 'oil-and-gas-2025',
+        'callisto': 'publishing-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -18,7 +19,8 @@ const LandingPage: React.FC = () => {
         const stats: Record<string, string> = {
             'currys': '34 total responses analyzed',
             'boux-avenue': '28 responses analyzed',
-            'adnoc': '45 responses analyzed'
+            'adnoc': '45 responses analyzed',
+            'callisto': '34 responses analyzed'
         };
         return stats[clientId] || 'Analysis available';
     };

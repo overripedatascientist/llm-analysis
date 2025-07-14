@@ -17,8 +17,8 @@ export const clients: Record<string, ClientConfig> = {
         id: 'currys',
         name: 'currys',
         // displayName: 'Currys',
-        displayName: 'Test Co.',
-        description: 'Consumer Electronics & Tech Retail Analysis',
+        displayName: 'Consumer Electronics Company',
+        description: 'Consumer Electronics & Tech Retail',
         category: 'Electronics',
         market: 'UK Retail',
         dataFile: '/data/currys.json',
@@ -30,8 +30,8 @@ export const clients: Record<string, ClientConfig> = {
     'boux-avenue': {
         id: 'boux-avenue',
         name: 'boux-avenue',
-        displayName: 'Boux Avenue',
-        description: 'Lingerie & Intimate Apparel Analysis',
+        displayName: 'Fashion Company',
+        description: 'Lingerie & Intimate Apparel',
         category: 'Fashion',
         market: 'UK Retail',
         dataFile: '/data/boux-avenue.json',
@@ -43,8 +43,8 @@ export const clients: Record<string, ClientConfig> = {
     'adnoc': {
         id: 'adnoc',
         name: 'adnoc',
-        displayName: 'ADNOC',
-        description: 'Maximum Energy Emissions',
+        displayName: 'Energy Company',
+        description: 'Diversified Energy and Sustainability',
         category: 'Energy',
         market: 'UAE Energy',
         dataFile: '/data/adnoc.json',
@@ -52,6 +52,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#1F52A7',
         brandKeywords: ['adnoc', 'a.d.n.o.c.', 'Abu Dhabi National Oil Company', 'ADNOC Group'],
         icon: 'oil-can'
+    },
+    'callisto': {
+        id: 'callisto',
+        name: 'callisto',
+        displayName: 'Publishing Company',
+        description: 'Consumer-focused Books and Audiobooks',
+        category: 'Publishing',
+        market: 'US Publishing',
+        dataFile: '/data/callisto.json',
+        primaryColor: '#E6543B',
+        secondaryColor: '#E6543B',
+        brandKeywords: ['callisto', 'calisto'],
+        icon: 'book'
     }
 };
 
