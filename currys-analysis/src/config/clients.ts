@@ -65,6 +65,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#E6543B',
         brandKeywords: ['callisto', 'calisto'],
         icon: 'book'
+    },
+    'sensodyne': {
+        id: 'sensodyne',
+        name: 'sensodyne',
+        displayName: 'Healthcare Company',
+        description: 'Oral Care & Dental Health Products',
+        category: 'Healthcare',
+        market: 'Global Healthcare',
+        dataFile: '/data/sensodyne.json',
+        primaryColor: '#2E86AB',
+        secondaryColor: '#A23B72',
+        brandKeywords: ['sensodyne', 'sensodyne toothpaste'],
+        icon: 'heart'
     }
 };
 
