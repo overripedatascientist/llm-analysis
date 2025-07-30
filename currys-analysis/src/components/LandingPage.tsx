@@ -12,7 +12,8 @@ const LandingPage: React.FC = () => {
         'boux-avenue': 'affordable-luxury-2025',
         'adnoc': 'oil-and-gas-2025',
         'callisto': 'publishing-2025',
-        'sensodyne': 'oral-care-2025'
+        'sensodyne': 'oral-care-2025',
+        'cvc-capital-partners': 'private-equity-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -22,7 +23,8 @@ const LandingPage: React.FC = () => {
             'boux-avenue': '28 responses analyzed',
             'adnoc': '45 responses analyzed',
             'callisto': '34 responses analyzed',
-            'sensodyne': '42 responses analyzed'
+            'sensodyne': '42 responses analyzed',
+            'cvc-capital-partners': '38 responses analyzed'
         };
         return stats[clientId] || 'Analysis available';
     };
