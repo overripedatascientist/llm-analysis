@@ -78,6 +78,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#A23B72',
         brandKeywords: ['sensodyne', 'sensodyne toothpaste'],
         icon: 'heart'
+    },
+    'cvc-capital-partners': {
+        id: 'cvc-capital-partners',
+        name: 'cvc-capital-partners',
+        displayName: 'Investment Company',
+        description: 'Private Equity & Investment Management',
+        category: 'Private Equity',
+        market: 'Global Investment',
+        dataFile: '/data/cvc-capital-partners.json',
+        primaryColor: '#1B365D',
+        secondaryColor: '#4A90A4',
+        brandKeywords: ['cvc', 'cvc capital', 'cvc capital partners', 'cvc partners'],
+        icon: 'chart-line'
     }
 };
 
