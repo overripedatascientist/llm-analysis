@@ -13,7 +13,11 @@ const LandingPage: React.FC = () => {
         'adnoc': 'oil-and-gas-2025',
         'callisto': 'publishing-2025',
         'sensodyne': 'oral-care-2025',
-        'cvc-capital-partners': 'private-equity-2025'
+        'cvc-capital-partners': 'private-equity-2025',
+        'found': 'digital-marketing-2025',
+        'telehouse': 'data-centers-2025',
+        'toolstation': 'tools-hardware-2025',
+        'pwc': 'professional-services-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -24,7 +28,11 @@ const LandingPage: React.FC = () => {
             'adnoc': '45 responses analyzed',
             'callisto': '34 responses analyzed',
             'sensodyne': '42 responses analyzed',
-            'cvc-capital-partners': '38 responses analyzed'
+            'cvc-capital-partners': '38 responses analyzed',
+            'found': '31 responses analyzed',
+            'telehouse': '29 responses analyzed',
+            'toolstation': '36 responses analyzed',
+            'pwc': '43 responses analyzed'
         };
         return stats[clientId] || 'Analysis available';
     };
