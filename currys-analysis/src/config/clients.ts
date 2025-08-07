@@ -91,6 +91,58 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#4A90A4',
         brandKeywords: ['cvc', 'cvc capital', 'cvc capital partners', 'cvc partners'],
         icon: 'chart-line'
+    },
+    'found': {
+        id: 'found',
+        name: 'found',
+        displayName: 'Marketing Agency',
+        description: 'Digital Marketing & Creative Services',
+        category: 'Marketing',
+        market: 'UK Marketing',
+        dataFile: '/data/found.json',
+        primaryColor: '#FF6B35',
+        secondaryColor: '#004E89',
+        brandKeywords: ['found', 'found agency', 'found digital'],
+        icon: 'megaphone'
+    },
+    'telehouse': {
+        id: 'telehouse',
+        name: 'telehouse',
+        displayName: 'Technology Company',
+        description: 'Data Centers & Colocation Services',
+        category: 'Technology',
+        market: 'Global Technology',
+        dataFile: '/data/telehouse.json',
+        primaryColor: '#0066CC',
+        secondaryColor: '#00A651',
+        brandKeywords: ['telehouse', 'tele house'],
+        icon: 'server'
+    },
+    'toolstation': {
+        id: 'toolstation',
+        name: 'toolstation',
+        displayName: 'Retail Company',
+        description: 'Tools & Hardware Retail',
+        category: 'Retail',
+        market: 'UK Retail',
+        dataFile: '/data/toolstation.json',
+        primaryColor: '#E31E24',
+        secondaryColor: '#FFA500',
+        brandKeywords: ['toolstation', 'tool station'],
+        icon: 'wrench'
+    },
+    'pwc': {
+        id: 'pwc',
+        name: 'pwc',
+        displayName: 'Professional Services Company',
+        description: 'Consulting & Professional Services',
+        category: 'Professional Services',
+        market: 'Global Professional Services',
+        dataFile: '/data/pwc.json',
+        primaryColor: '#FF7900',
+        secondaryColor: '#4B4B4D',
+        brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
+        icon: 'briefcase'
     }
 };
 
