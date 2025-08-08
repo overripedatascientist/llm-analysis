@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
     BarChart,
@@ -11,6 +11,7 @@ import {
     ResponsiveContainer,
     Cell
 } from 'recharts';
+import ReactECharts from 'echarts-for-react';
 import { ClientConfig } from '../config/clients';
 
 interface BrandCount {
@@ -262,6 +263,177 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
             .join(' ');
     };
 
+    // Build Treemap option grouped by provider; color denotes provider, size denotes mention count
+    const { treemapOption, providerLegend } = useMemo(() => {
+        const MAX_PROVIDERS = 4; // limit providers displayed for clarity
+        const MAX_BRANDS_PER_PROVIDER = 12; // limit brands per provider
+        const keywords = (config.brandKeywords || []).map(k => k.toLowerCase());
+
+        const isClientBrand = (name: string) =>
+            keywords.some(k => (name || '').toLowerCase().includes(k));
+
+        const all = data?.allMentions || [];
+        const counts: Record<string, Record<string, number>> = {};
+        all.forEach((m: any) => {
+            const provider = (m.provider || 'Unknown') as string;
+            const brand = (m.brand_name || 'Unknown') as string;
+            if (!counts[provider]) counts[provider] = {};
+            counts[provider][brand] = (counts[provider][brand] || 0) + 1;
+        });
+
+        // Compute totals and keep top N providers
+        const providerTotals = Object.entries(counts).map(([prov, brands]) => {
+            const total = Object.values(brands).reduce((s, v) => s + v, 0);
+            return [prov, total] as [string, number];
+        });
+        const topProviders = providerTotals
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, MAX_PROVIDERS)
+            .map(([prov]) => prov);
+
+        const defaultPalette = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
+        const explicitMap: Record<string, string> = {
+            OpenAI: '#1f77b4',
+            'OpenAI (GPT-4o)': '#1f77b4',
+            Anthropic: '#ff7f0e',
+            Google: '#2ca02c',
+            Gemini: '#2ca02c',
+            'Google Gemini': '#2ca02c',
+            Microsoft: '#9467bd',
+            Perplexity: '#17becf',
+            Meta: '#d62728',
+            Cohere: '#8c564b',
+            Mistral: '#e377c2',
+            Unknown: '#7f7f7f'
+        };
+
+        const colorMap: Record<string, string> = {};
+        topProviders.forEach((name, idx) => {
+            colorMap[name] = explicitMap[name] || defaultPalette[idx % defaultPalette.length];
+        });
+
+        const dataNodes = topProviders.map((provider) => {
+            const brandsMap = counts[provider];
+            const sorted = Object.entries(brandsMap).sort((a, b) => b[1] - a[1]);
+            const limited = sorted.slice(0, MAX_BRANDS_PER_PROVIDER);
+
+            const providerTotalFull = Object.values(brandsMap).reduce((s, v) => s + v, 0);
+
+            const children = limited.map(([brand, count]) => {
+                const client = isClientBrand(brand);
+                return {
+                    name: brand,
+                    value: count,
+                    provider,
+                    isClient: client,
+                    providerTotal: providerTotalFull,
+                    itemStyle: {
+                        color: colorMap[provider],
+                        borderColor: client ? '#111827' : '#ffffff',
+                        borderWidth: client ? 2 : 1,
+                        shadowBlur: client ? 12 : 0,
+                        shadowColor: client ? 'rgba(0,0,0,0.35)' : 'transparent'
+                    },
+                    // Give client tiles a subtle label background for emphasis
+                    label: client
+                        ? { backgroundColor: 'rgba(17,24,39,0.25)', fontWeight: 'bold', padding: [2, 4], borderRadius: 3 }
+                        : undefined
+                };
+            });
+
+            const total = children.reduce((sum, c: any) => sum + (c.value as number), 0);
+            return {
+                name: provider,
+                value: total,
+                children,
+                itemStyle: { color: colorMap[provider], borderColor: '#ffffff', borderWidth: 1 }
+            };
+        });
+
+        const option = {
+            tooltip: {
+                confine: true,
+                formatter: (info: any) => {
+                    const node = info?.data || {};
+                    if (node.children) {
+                        return `${node.name}<br/>Total mentions (top ${MAX_BRANDS_PER_PROVIDER}): ${node.value}`;
+                    } else {
+                        const prov = node.provider || (info?.treePathInfo && info.treePathInfo[1] && info.treePathInfo[1].name) || '';
+                        const share = node.providerTotal ? ((node.value / node.providerTotal) * 100).toFixed(1) + '%' : '';
+                        const highlighted = node.isClient ? '<span style="padding:2px 6px;border-radius:4px;background:#111827;color:#fff;margin-right:6px;">Client</span>' : '';
+                        return `${highlighted}<b>${node.name}</b><br/>Provider: ${prov}<br/>Mentions: ${node.value}${share ? ` (${share} of ${prov})` : ''}`;
+                    }
+                }
+            },
+            series: [
+                {
+                    type: 'treemap',
+                    left: '3%',
+                    right: '3%',
+                    top: 0,
+                    bottom: 48, // leave space for breadcrumb
+                    roam: true,
+                    sort: 'desc',
+                    nodeClick: 'zoomToNode',
+                    breadcrumb: {
+                        show: true,
+                        left: 'center',
+                        bottom: 8,
+                        height: 22,
+                        itemStyle: { color: '#4b5563', textStyle: { color: '#fff' } }
+                    },
+                    labelLayout: (params: any) => {
+                        const w = params.rect.width;
+                        const h = params.rect.height;
+                        const isClient = !!params?.data?.isClient;
+                        const isProvider = !!params?.data?.children;
+                        // Always show labels for client and providers; otherwise hide very small tiles
+                        return { hide: (w < 80 || h < 38) && !isClient && !isProvider };
+                    },
+                    label: {
+                        show: true,
+                        // Use plain text to avoid curly-brace artifacts; show name and value on two lines
+                        formatter: (p: any) => `${p.name}\n${p.value}`,
+                        color: '#fff',
+                        fontSize: 12,
+                        lineHeight: 16,
+                        backgroundColor: 'transparent',
+                        overflow: 'break'
+                    },
+                    upperLabel: {
+                        show: false
+                    },
+                    emphasis: {
+                        label: { show: true },
+                        itemStyle: { borderColor: '#111827', borderWidth: 2, shadowBlur: 16, shadowColor: 'rgba(0,0,0,0.45)' }
+                    },
+                    itemStyle: {
+                        borderColor: '#ffffff',
+                        borderWidth: 1,
+                        gapWidth: 1
+                    },
+                    levels: [
+                        {
+                            upperLabel: { show: false },
+                            itemStyle: { borderColor: '#ffffff', borderWidth: 1, gapWidth: 1 }
+                        },
+                        {
+                            itemStyle: { borderColor: '#ffffff', borderWidth: 0.5, gapWidth: 0.5 }
+                        }
+                    ],
+                    visibleMin: 10,
+                    childrenVisibleMin: 10,
+                    data: dataNodes,
+                    animationDurationUpdate: 500
+                }
+            ]
+        };
+
+        const providerLegend = topProviders.map((name) => ({ name, color: colorMap[name] }));
+
+        return { treemapOption: option, providerLegend };
+    }, [data?.allMentions, config.brandKeywords]);
+
     if (loading) {
         return (
             <div className="p-4">
@@ -330,21 +502,16 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                         <div className="mb-8">
                             <h2 className="text-xl font-bold mb-2">Top 15 Most Mentioned Brands</h2>
                             <p className="mb-4 text-gray-600">Comparison of how often {config.displayName} is mentioned relative to competitors across all queries.</p>
-                            <div className="h-96">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart data={data.topBrands} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
-                                        <YAxis />
-                                        <Tooltip content={<CustomTooltip />} />
-                                        <Legend />
-                                        <Bar dataKey="count" name="Mentions" fill={config.secondaryColor}>
-                                            {data.topBrands.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
-                                            ))}
-                                        </Bar>
-                                    </BarChart>
-                                </ResponsiveContainer>
+                            <div className="h-[34rem] md:h-[42rem]">
+                                <ReactECharts option={treemapOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
+                            </div>
+                            <div className="mt-2 flex flex-wrap gap-4">
+                                {providerLegend.map((p) => (
+                                    <div key={p.name} className="flex items-center gap-2">
+                                        <span className="inline-block w-3 h-3 rounded" style={{ backgroundColor: p.color }}></span>
+                                        <span className="text-sm text-gray-700">{p.name}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 

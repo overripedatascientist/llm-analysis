@@ -7,13 +7,16 @@ This project is a **multi-client competitive analysis platform** that helps bran
 ## Why This Project Exists
 
 ### The Problem
+
 - **AI-First Consumer Behavior**: Consumers increasingly rely on LLMs for product research and recommendations
 - **Invisible Competition**: Traditional SEO and marketing analytics don't capture how brands perform in AI responses
 - **New Competitive Landscape**: Brand visibility in LLM outputs creates a new competitive dimension that wasn't measurable before
 - **Strategic Blind Spot**: Companies need to understand and optimize their presence in AI-generated recommendations
 
 ### The Solution
+
 This dashboard transforms raw LLM response data into actionable competitive intelligence, helping brands:
+
 - **Understand their competitive positioning** in AI assistant responses
 - **Identify optimization opportunities** to improve AI visibility
 - **Track performance across different LLM providers** (ChatGPT, Claude, Gemini, etc.)
@@ -23,12 +26,14 @@ This dashboard transforms raw LLM response data into actionable competitive inte
 ## What It Currently Achieves
 
 ### For Brands
+
 - **Competitive Intelligence**: See exactly where your brand ranks against competitors in LLM responses
 - **Provider Analysis**: Understand how different AI systems (OpenAI, Anthropic, Google) represent your brand
 - **Category Insights**: Discover which product categories you dominate vs. where you're underrepresented
 - **Strategic Recommendations**: Get actionable advice for improving AI visibility
 
 ### For Analysts
+
 - **Comprehensive Data Processing**: Automatically processes complex LLM response datasets
 - **Multi-Dimensional Analysis**: Analyzes brand mentions across queries, categories, providers, and positioning
 - **Scalable Framework**: Easy to add new clients and datasets
