@@ -136,7 +136,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
 
         const topBrands: BrandCount[] = Object.entries(brandCounts)
             .sort((a, b) => b[1] - a[1])
-            .slice(0, 15)
+            .slice(0, 20)
             .map(([brand, count]) => ({ brand, count }));
 
         const categories = Array.from(new Set(allMentions.map(m => m.category)));
@@ -434,6 +434,94 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
         return { treemapOption: option, providerLegend };
     }, [data?.allMentions, config.brandKeywords]);
 
+    // Build Stacked Bar Chart on Polar (Radial) for Category Analysis
+    const categoryPolarOption = useMemo(() => {
+        if (!data) return {};
+
+        // Top brands (bars)
+        const brandsTop = (data.topBrands || []).map((b) => b.brand);
+
+        // Unique categories, sorted by total mentions descending for legend readability
+        const categoryTotals: [string, number][] = Array.from(
+            new Set((data.allMentions || []).map((m: any) => m.category))
+        )
+            .filter((c): c is string => !!c)
+            .map((cat) => [
+                cat,
+                (data.allMentions || []).filter((m: any) => m.category === cat).length
+            ]);
+
+        const categories = categoryTotals.sort((a, b) => b[1] - a[1]).map(([c]) => c);
+
+        // Initialize counts per category per brand
+        const countsByCatBrand: Record<string, Record<string, number>> = {};
+        categories.forEach((cat) => {
+            countsByCatBrand[cat] = {};
+            brandsTop.forEach((brand) => {
+                countsByCatBrand[cat][brand] = 0;
+            });
+        });
+
+        // Aggregate mention counts
+        (data.allMentions || []).forEach((m: any) => {
+            const cat = m.category as string;
+            const brand = m.brand_name as string;
+            if (countsByCatBrand[cat] && brandsTop.includes(brand)) {
+                countsByCatBrand[cat][brand] += 1;
+            }
+        });
+
+        // Series: one per category, stacked on polar
+        const series = categories.map((cat) => ({
+            type: 'bar',
+            coordinateSystem: 'polar',
+            name: formatCategory(cat),
+            stack: 'mentions',
+            emphasis: { focus: 'series' as const },
+            data: brandsTop.map((brand) => countsByCatBrand[cat][brand] || 0)
+        }));
+
+        const option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: { type: 'shadow' },
+                confine: true,
+                formatter: (params: any) => {
+                    if (!Array.isArray(params) || params.length === 0) return '';
+                    const company = params[0]?.axisValue || '';
+                    let total = 0;
+                    const lines = params
+                        .filter((p: any) => p && p.value > 0)
+                        .map((p: any) => {
+                            total += p.value;
+                            return `${p.marker}${p.seriesName}: ${p.value}`;
+                        })
+                        .join('<br/>');
+                    return `<b>${company}</b>${lines ? `<br/>${lines}<br/><span style="color:#666">Total: ${total}</span>` : ''}`;
+                }
+            },
+            angleAxis: {
+                type: 'category',
+                data: brandsTop,
+                axisLabel: {
+                    rotate: 45,
+                    interval: 0
+                }
+            },
+            radiusAxis: {},
+            polar: {},
+            series,
+            legend: {
+                type: 'scroll',
+                orient: 'vertical',
+                right: 0,
+                top: 'middle'
+            }
+        };
+
+        return option;
+    }, [data]);
+
     if (loading) {
         return (
             <div className="p-4">
@@ -568,27 +656,12 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                             <h2 className="text-xl font-bold mb-2">Top Brands by Category</h2>
                             <p className="mb-4 text-gray-600">Comparison of {config.displayName} versus competitors across different product categories.</p>
 
-                            {Object.entries(data.brandsByCategory).map(([category, brands]) => (
-                                <div key={category} className="mb-8">
-                                    <h3 className="text-lg font-bold mb-2">{formatCategory(category)}</h3>
-                                    <div className="h-80">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={brands} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                                                <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
-                                                <YAxis />
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Legend />
-                                                <Bar dataKey="count" name="Mentions" fill="#2ecc71">
-                                                    {brands.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
-                                                    ))}
-                                                </Bar>
-                                            </BarChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                </div>
-                            ))}
+                            <div className="h-[34rem] md:h-[42rem]">
+                                <ReactECharts option={categoryPolarOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
+                            </div>
+                            <p className="text-xs text-gray-500 mt-2">
+                                Bars represent companies (top 15). Colors represent prompt categories. Stack height equals the number of LLM responses mentioning that company within each category.
+                            </p>
                         </div>
                     </div>
                 )}
