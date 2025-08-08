@@ -263,6 +263,31 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
             .join(' ');
     };
 
+    // Visual helpers for sleek table styling
+    const providerColor = (provider: string) => {
+        const map: Record<string, string> = {
+            OpenAI: 'bg-blue-100 text-blue-700 ring-blue-200',
+            'OpenAI (GPT-4o)': 'bg-blue-100 text-blue-700 ring-blue-200',
+            Anthropic: 'bg-amber-100 text-amber-700 ring-amber-200',
+            Google: 'bg-green-100 text-green-700 ring-green-200',
+            Gemini: 'bg-green-100 text-green-700 ring-green-200',
+            'Google Gemini': 'bg-green-100 text-green-700 ring-green-200',
+            Microsoft: 'bg-violet-100 text-violet-700 ring-violet-200',
+            Perplexity: 'bg-cyan-100 text-cyan-700 ring-cyan-200',
+            Meta: 'bg-rose-100 text-rose-700 ring-rose-200',
+            Cohere: 'bg-fuchsia-100 text-fuchsia-700 ring-fuchsia-200',
+            Mistral: 'bg-pink-100 text-pink-700 ring-pink-200'
+        };
+        return map[provider] || 'bg-gray-100 text-gray-700 ring-gray-200';
+    };
+
+    const rankBadge = (position: number) => {
+        if (position === 1) return 'bg-emerald-100 text-emerald-700 ring-emerald-200';
+        if (position === 2) return 'bg-lime-100 text-lime-700 ring-lime-200';
+        if (position <= 5) return 'bg-yellow-100 text-yellow-800 ring-yellow-200';
+        return 'bg-gray-100 text-gray-700 ring-gray-200';
+    };
+
     // Build Treemap option grouped by provider; color denotes provider, size denotes mention count
     const { treemapOption, providerLegend } = useMemo(() => {
         const MAX_PROVIDERS = 4; // limit providers displayed for clarity
@@ -706,35 +731,63 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                             <p className="mb-4 text-gray-600">Detailed analysis of {config.displayName}'s position in LLM responses.</p>
 
                             {data.clientPositions.length > 0 ? (
-                                <div className="bg-white p-4 rounded border shadow mb-4">
-                                    <h3 className="font-bold mb-2">Positioning Details</h3>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full border-collapse">
-                                            <thead>
-                                                <tr className="bg-gray-100">
-                                                    <th className="border p-2 text-left">Query</th>
-                                                    <th className="border p-2 text-left">Provider</th>
-                                                    <th className="border p-2 text-left">Category</th>
-                                                    <th className="border p-2 text-left">Position</th>
-                                                    <th className="border p-2 text-left">Total Companies</th>
-                                                    <th className="border p-2 text-left">Position %</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {data.clientPositions.map((pos, idx) => (
-                                                    <tr key={idx} className={idx % 2 === 0 ? 'bg-gray-50' : ''}>
-                                                        <td className="border p-2">{pos.query}</td>
-                                                        <td className="border p-2">{pos.provider}</td>
-                                                        <td className="border p-2">{formatCategory(pos.category)}</td>
-                                                        <td className="border p-2">{pos.position}</td>
-                                                        <td className="border p-2">{pos.total_companies}</td>
-                                                        <td className="border p-2">{(pos.normalized_position * 100).toFixed(2)}%</td>
+                                    <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                        <div className="px-4 pt-4">
+                                            <h3 className="font-semibold text-gray-900">Positioning Details</h3>
+                                        </div>
+                                        <div className="overflow-x-auto mt-3">
+                                            <table className="min-w-full text-sm">
+                                                <thead className="sticky top-0 z-10 bg-gradient-to-r from-gray-50 to-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                                    <tr className="text-left text-xs font-semibold uppercase tracking-wider text-gray-600">
+                                                        <th className="px-4 py-3">Query</th>
+                                                        <th className="px-4 py-3">Provider</th>
+                                                        <th className="px-4 py-3">Category</th>
+                                                        <th className="px-4 py-3">Position</th>
+                                                        <th className="px-4 py-3">Total Companies</th>
+                                                        <th className="px-4 py-3">Position %</th>
                                                     </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-100">
+                                                    {data.clientPositions.map((pos, idx) => (
+                                                        <tr key={idx} className="odd:bg-white even:bg-slate-50/50 hover:bg-gray-50/80 transition-colors">
+                                                            <td className="px-4 py-3 max-w-[32rem]">
+                                                                <div className="text-gray-900 font-medium truncate" title={pos.query}>{pos.query}</div>
+                                                                <div className="text-gray-500 text-xs">LLM query</div>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full ring-1 ring-inset ${providerColor(pos.provider)}`}>
+                                                                    <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70"></span>
+                                                                    {pos.provider}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <span className="inline-flex px-2 py-1 rounded-full ring-1 ring-inset bg-gray-100 text-gray-700 ring-gray-200">
+                                                                    {formatCategory(pos.category)}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3">
+                                                                <span className={`inline-flex px-2.5 py-1 rounded-full ring-1 ring-inset tabular-nums font-semibold ${rankBadge(pos.position)}`}>
+                                                                    #{pos.position}
+                                                                </span>
+                                                            </td>
+                                                            <td className="px-4 py-3 text-gray-700 tabular-nums">{pos.total_companies}</td>
+                                                            <td className="px-4 py-3">
+                                                                <div className="flex items-center gap-3">
+                                                                    <div className="relative w-36 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                                                        <div
+                                                                            className="absolute left-0 top-0 h-full bg-gradient-to-r from-blue-500 to-indigo-500"
+                                                                            style={{ width: `${Math.min(100, Math.max(0, pos.normalized_position * 100))}%` }}
+                                                                        />
+                                                                    </div>
+                                                                    <span className="text-gray-700 tabular-nums">{(pos.normalized_position * 100).toFixed(1)}%</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
-                                </div>
                             ) : (
                                 <p>No positioning data available for {config.displayName}.</p>
                             )}
