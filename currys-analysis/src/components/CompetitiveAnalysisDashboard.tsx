@@ -550,9 +550,9 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
     if (loading) {
         return (
             <div className="p-4">
-                <div className="bg-gray-100 px-4 py-2">
+                <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
                     <nav className="text-sm text-left">
-                        <Link to="/" className="text-blue-600 hover:text-blue-800">← Back to Dashboard Selection</Link>
+                        <Link to="/" className="text-blue-700 hover:text-blue-900">← Back to Dashboard Selection</Link>
                     </nav>
                 </div>
                 <div className="max-w-6xl mx-auto mt-8">
@@ -565,9 +565,9 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
     if (error) {
         return (
             <div className="p-4">
-                <div className="bg-gray-100 px-4 py-2">
+                <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
                     <nav className="text-sm text-left">
-                        <Link to="/" className="text-blue-600 hover:text-blue-800">← Back to Dashboard Selection</Link>
+                        <Link to="/" className="text-blue-700 hover:text-blue-900">← Back to Dashboard Selection</Link>
                     </nav>
                 </div>
                 <div className="max-w-6xl mx-auto mt-8">
@@ -586,9 +586,9 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
     return (
         <div>
             {/* Navigation breadcrumb */}
-            <div className="bg-gray-100 px-4 py-2">
+            <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
                 <nav className="text-sm text-left">
-                    <Link to="/" className="text-blue-600 hover:text-blue-800">← Back to Dashboard Selection</Link>
+                    <Link to="/" className="text-blue-700 hover:text-blue-900">← Back to Dashboard Selection</Link>
                 </nav>
             </div>
 
@@ -597,41 +597,51 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                 <p className="mb-4">Analysis of how {config.displayName} appears in LLM responses to industry-related queries.</p>
 
                 {/* Tab Navigation */}
-                <div className="flex border-b mb-4">
-                    {['overview', 'category', 'providers', 'positioning', 'archive'].map((tab) => (
-                        <button
-                            key={tab}
-                            className={`px-4 py-2 capitalize ${activeTab === tab ? 'border-b-2 border-blue-500 font-bold' : ''}`}
-                            onClick={() => setActiveTab(tab)}
-                        >
-                            {tab === 'archive' ? 'Prompt Archive' : `${tab} Analysis`}
-                        </button>
-                    ))}
+                <div className="mb-4">
+                    <div className="inline-flex flex-wrap gap-2 rounded-full p-1 bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200">
+                        {['overview', 'category', 'providers', 'positioning', 'archive'].map((tab) => (
+                            <button
+                                key={tab}
+                                className={`px-3 py-1.5 rounded-full text-sm capitalize transition-colors ${
+                                    activeTab === tab
+                                        ? 'bg-blue-600 text-white shadow-sm'
+                                        : 'text-gray-700 hover:bg-gray-100'
+                                }`}
+                                onClick={() => setActiveTab(tab)}
+                            >
+                                {tab === 'archive' ? 'Prompt Archive' : `${tab} Analysis`}
+                            </button>
+                        ))}
+                    </div>
                 </div>
 
                 {/* Overview Tab */}
                 {activeTab === 'overview' && (
                     <div>
                         <div className="mb-8">
-                            <h2 className="text-xl font-bold mb-2">Top 15 Most Mentioned Brands</h2>
-                            <p className="mb-4 text-gray-600">Comparison of how often {config.displayName} is mentioned relative to competitors across all queries.</p>
-                            <div className="h-[34rem] md:h-[42rem]">
-                                <ReactECharts option={treemapOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
-                            </div>
-                            <div className="mt-2 flex flex-wrap gap-4">
-                                {providerLegend.map((p) => (
-                                    <div key={p.name} className="flex items-center gap-2">
-                                        <span className="inline-block w-3 h-3 rounded" style={{ backgroundColor: p.color }}></span>
-                                        <span className="text-sm text-gray-700">{p.name}</span>
-                                    </div>
-                                ))}
+                            <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                <div className="px-4 pt-4">
+                                    <h2 className="text-xl font-bold">Top 15 Most Mentioned Brands</h2>
+                                    <p className="mt-1 text-gray-600">Comparison of how often {config.displayName} is mentioned relative to competitors across all queries.</p>
+                                </div>
+                                <div className="h-[34rem] md:h-[42rem] px-2 md:px-4">
+                                    <ReactECharts option={treemapOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
+                                </div>
+                                <div className="px-4 pb-4 mt-2 flex flex-wrap gap-4">
+                                    {providerLegend.map((p) => (
+                                        <div key={p.name} className="flex items-center gap-2">
+                                            <span className="inline-block w-3 h-3 rounded" style={{ backgroundColor: p.color }}></span>
+                                            <span className="text-sm text-gray-700">{p.name}</span>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
                         <div className="mb-8">
                             <h2 className="text-xl font-bold mb-2">Key Insights</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <div className="bg-white p-4 rounded border shadow">
+                                <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-4">
                                     <h3 className="font-bold mb-2">{config.displayName} Presence in Results</h3>
                                     <p>{config.displayName} appears in {data.clientPositions.length} out of {data.allMentions.length} ({((data.clientPositions.length / data.allMentions.length) * 100).toFixed(1)}%) total LLM responses.</p>
                                     {data.avgPosition > 0 && (
@@ -641,7 +651,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                                         </>
                                     )}
                                 </div>
-                                <div className="bg-white p-4 rounded border shadow">
+                                <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-4">
                                     <h3 className="font-bold mb-2">Top Competitors</h3>
                                     <p>Based on co-occurrence with {config.displayName} in LLM responses:</p>
                                     <ol className="list-decimal pl-5">
@@ -655,19 +665,27 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
 
                         {data.topCompetitors.length > 0 && (
                             <div className="mb-8">
-                                <h2 className="text-xl font-bold mb-2">Top 10 Competitors by Co-occurrence</h2>
-                                <p className="mb-4 text-gray-600">Companies that appear most frequently in the same LLM responses as {config.displayName}</p>
-                                <div className="h-80">
-                                    <ResponsiveContainer width="100%" height="100%">
-                                        <BarChart data={data.topCompetitors} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                                            <CartesianGrid strokeDasharray="3 3" />
-                                            <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
-                                            <YAxis />
-                                            <Tooltip content={<CustomTooltip />} />
-                                            <Legend />
-                                            <Bar dataKey="count" name="Co-occurrences" fill="#9b59b6" />
-                                        </BarChart>
-                                    </ResponsiveContainer>
+                                <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                    <div className="px-4 pt-4">
+                                        <h2 className="text-xl font-bold">Top 10 Competitors by Co-occurrence</h2>
+                                        <p className="mt-1 text-gray-600">Companies that appear most frequently in the same LLM responses as {config.displayName}</p>
+                                    </div>
+                                    <div className="h-80 px-2 md:px-4 pb-4">
+                                        <ResponsiveContainer width="100%" height="100%">
+                                            <BarChart data={data.topCompetitors} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                                                <CartesianGrid strokeDasharray="3 3" />
+                                                <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
+                                                <YAxis />
+                                                <Tooltip content={<CustomTooltip />} />
+                                                <Legend />
+                                                <Bar dataKey="count" name="Co-occurrences" fill={config.secondaryColor}>
+                                                    {data.topCompetitors.map((entry, index) => (
+                                                        <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
+                                                    ))}
+                                                </Bar>
+                                            </BarChart>
+                                        </ResponsiveContainer>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -678,15 +696,20 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
                 {activeTab === 'category' && (
                     <div>
                         <div className="mb-8">
-                            <h2 className="text-xl font-bold mb-2">Top Brands by Category</h2>
-                            <p className="mb-4 text-gray-600">Comparison of {config.displayName} versus competitors across different product categories.</p>
-
-                            <div className="h-[34rem] md:h-[42rem]">
-                                <ReactECharts option={categoryPolarOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
+                            <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                <div className="px-4 pt-4">
+                                    <h2 className="text-xl font-bold">Top Brands by Category</h2>
+                                    <p className="mt-1 text-gray-600">Comparison of {config.displayName} versus competitors across different product categories.</p>
+                                </div>
+                                <div className="h-[34rem] md:h-[42rem] px-2 md:px-4">
+                                    <ReactECharts option={categoryPolarOption as any} style={{ width: '100%', height: '100%' }} notMerge={true} />
+                                </div>
+                                <div className="px-4 pb-4">
+                                    <p className="text-xs text-gray-500 mt-2">
+                                        Bars represent companies (top 15). Colors represent prompt categories. Stack height equals the number of LLM responses mentioning that company within each category.
+                                    </p>
+                                </div>
                             </div>
-                            <p className="text-xs text-gray-500 mt-2">
-                                Bars represent companies (top 15). Colors represent prompt categories. Stack height equals the number of LLM responses mentioning that company within each category.
-                            </p>
                         </div>
                     </div>
                 )}
@@ -700,22 +723,26 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
 
                             {Object.entries(data.brandsByProvider).map(([provider, brands]) => (
                                 <div key={provider} className="mb-8">
-                                    <h3 className="text-lg font-bold mb-2">{provider}</h3>
-                                    <div className="h-80">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <BarChart data={brands} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
-                                                <CartesianGrid strokeDasharray="3 3" />
-                                                <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
-                                                <YAxis />
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Legend />
-                                                <Bar dataKey="count" name="Mentions" fill="#e74c3c">
-                                                    {brands.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
-                                                    ))}
-                                                </Bar>
-                                            </BarChart>
-                                        </ResponsiveContainer>
+                                    <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+                                        <div className="px-4 pt-4">
+                                            <h3 className="text-lg font-semibold">{provider}</h3>
+                                        </div>
+                                        <div className="h-80 px-2 md:px-4 pb-4">
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <BarChart data={brands} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                                                    <CartesianGrid strokeDasharray="3 3" />
+                                                    <XAxis dataKey="brand" angle={-45} textAnchor="end" height={70} />
+                                                    <YAxis />
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                    <Legend />
+                                                    <Bar dataKey="count" name="Mentions" fill={config.secondaryColor}>
+                                                        {brands.map((entry, index) => (
+                                                            <Cell key={`cell-${index}`} fill={getBarColor(entry)} />
+                                                        ))}
+                                                    </Bar>
+                                                </BarChart>
+                                            </ResponsiveContainer>
+                                        </div>
                                     </div>
                                 </div>
                             ))}
