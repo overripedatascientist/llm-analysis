@@ -2,164 +2,327 @@
 
 ## Project Overview
 
-This project is a **multi-client competitive analysis platform** that helps brands understand how they appear in Large Language Model (LLM) responses compared to their competitors. As AI assistants like ChatGPT, Claude, and Gemini become increasingly important for consumer research and decision-making, this tool provides crucial insights into brand visibility and positioning in the AI-powered search landscape.
+This project is a multi-client competitive analysis platform that helps brands understand how they appear in Large Language Model (LLM) responses compared to their competitors. As AI assistants like ChatGPT, Claude, and Gemini become increasingly important for consumer research and decision-making, this tool provides crucial insights into brand visibility and positioning in the AI-powered search landscape.
 
 ## Why This Project Exists
 
 ### The Problem
-
-- **AI-First Consumer Behavior**: Consumers increasingly rely on LLMs for product research and recommendations
-- **Invisible Competition**: Traditional SEO and marketing analytics don't capture how brands perform in AI responses
-- **New Competitive Landscape**: Brand visibility in LLM outputs creates a new competitive dimension that wasn't measurable before
-- **Strategic Blind Spot**: Companies need to understand and optimize their presence in AI-generated recommendations
+- AI-First Consumer Behavior: Consumers increasingly rely on LLMs for product research and recommendations
+- Invisible Competition: Traditional SEO and marketing analytics don't capture how brands perform in AI responses
+- New Competitive Landscape: Brand visibility in LLM outputs creates a new competitive dimension that wasn't measurable before
+- Strategic Blind Spot: Companies need to understand and optimize their presence in AI-generated recommendations
 
 ### The Solution
-
 This dashboard transforms raw LLM response data into actionable competitive intelligence, helping brands:
-
-- **Understand their competitive positioning** in AI assistant responses
-- **Identify optimization opportunities** to improve AI visibility
-- **Track performance across different LLM providers** (ChatGPT, Claude, Gemini, etc.)
-- **Benchmark against competitors** in specific product categories
-- **Make data-driven decisions** about content and SEO strategy for the AI era
+- Understand their competitive positioning in AI assistant responses
+- Identify optimization opportunities to improve AI visibility
+- Track performance across different LLM providers (OpenAI, Anthropic, Google, etc.)
+- Benchmark against competitors in specific product categories
+- Make data-driven decisions about content and SEO strategy for the AI era
 
 ## What It Currently Achieves
 
 ### For Brands
-
-- **Competitive Intelligence**: See exactly where your brand ranks against competitors in LLM responses
-- **Provider Analysis**: Understand how different AI systems (OpenAI, Anthropic, Google) represent your brand
-- **Category Insights**: Discover which product categories you dominate vs. where you're underrepresented
-- **Strategic Recommendations**: Get actionable advice for improving AI visibility
+- Competitive Intelligence: See exactly where your brand ranks against competitors in LLM responses
+- Provider Analysis: Understand how different AI systems represent your brand
+- Category Insights: Discover which product categories you dominate vs. where you're underrepresented
+- Strategic Recommendations: Get actionable advice for improving AI visibility
 
 ### For Analysts
+- Comprehensive Data Processing: Automatically processes complex LLM response datasets
+- Multi-Dimensional Analysis: Analyzes brand mentions across queries, categories, providers, and positioning
+- Scalable Framework: Easy to add new clients and datasets
+- Professional Reporting: Client-ready dashboards with interactive visualizations
 
-- **Comprehensive Data Processing**: Automatically processes complex LLM response datasets
-- **Multi-Dimensional Analysis**: Analyzes brand mentions across queries, categories, providers, and positioning
-- **Scalable Framework**: Easy to add new clients and datasets
-- **Professional Reporting**: Client-ready dashboards with interactive visualizations
+---
 
-## Project Structure
+## Repository Layout (after refactor)
+
+The working React application lives under `currys-analysis/` (Create React App + TypeScript).
 
 ```
-currys-analysis/                 # (Should be llm-analysis in theory but it's where we started)
-├── index.html                 # Landing page with client selector
-├── currys/
-│   ├── index.html            # Currys-specific dashboard
-│   └── currys.json           # Currys LLM response data
-├── boux-avenue/
-│   ├── index.html            # Boux Avenue-specific dashboard
-│   └── boux-avenue.json      # Boux Avenue LLM response data
-├── multi_client_analysis.py  # Python script for data processing
-├── clients.json              # Client configuration file
-└── README.md                 # Project documentation
+/                       # repo root
+├─ .clinerules/
+│  └─ cline-overview.md # this file (project guidance for AI collaborators)
+├─ currys-analysis/
+│  ├─ public/
+│  │  ├─ data/                          # JSON datasets per client
+│  │  │  ├─ currys.json
+│  │  │  ├─ boux-avenue.json
+│  │  │  ├─ adnoc.json
+│  │  │  └─ ... (see repo)
+│  │  └─ index.html, manifest, icons, ...
+│  ├─ src/
+│  │  ├─ App.tsx                        # Router + client selection
+│  │  ├─ components/
+│  │  │  ├─ LandingPage.tsx
+│  │  │  ├─ CompetitiveAnalysisDashboard.tsx   # container (slim orchestrator)
+│  │  │  └─ dashboard/
+│  │  │     ├─ hooks/
+│  │  │     │  ├─ useClientData.ts            # fetch raw JSON (multi-path fallback)
+│  │  │     │  └─ useProcessedData.ts         # compute ProcessedData + chart options
+│  │  │     ├─ tabs/
+│  │  │     │  ├─ OverviewTab.tsx
+│  │  │     │  ├─ CategoryTab.tsx
+│  │  │     │  ├─ ProvidersTab.tsx
+│  │  │     │  ├─ PositioningTab.tsx
+│  │  │     │  └─ ArchiveTab.tsx
+│  │  │     ├─ charts/
+│  │  │     │  ├─ Treemap.tsx                 # ReactECharts wrapper
+│  │  │     │  └─ CategoryPolar.tsx           # ReactECharts wrapper
+│  │  │     ├─ shared/
+│  │  │     │  └─ utils.ts                    # formatCategory, providerColor, rankBadge, getBarColor
+│  │  │     └─ types/
+│  │  │        └─ analysis.ts                 # BrandCount, CurrysPosition, ProcessedData, etc.
+│  │  └─ config/
+│  │     └─ clients.ts                        # ClientConfig registry (id, colors, keywords, dataFile)
+│  ├─ package.json                            # CRA scripts + gh-pages deploy
+│  ├─ tailwind.config.js, postcss.config.js   # TailwindCSS (utility classes used in UI)
+│  └─ README.md
+└─ README.md (repo-level)
 ```
 
-### Data Structure
-Each JSON dataset contains LLM responses with:
-- **Query metadata**: Original search queries, categories, timestamps
-- **Provider information**: Which LLM generated the response (OpenAI, Anthropic, etc.)
-- **Company mentions**: Brands mentioned in each response with positioning data
-- **Context snippets**: Actual text snippets showing how brands are described
+Important: The previous static folders like `currys/` and `boux-avenue/` pages are no longer the primary path. Multi-client routing is handled by React Router (`/dashboard/:clientId`). Data is read from `public/data/*.json`.
 
-## Deployment & Infrastructure
+---
 
-### GitHub Pages Deployment
-- **Static Hosting**: Deployed on GitHub Pages for reliable, free hosting
-- **Multi-Client URLs**: 
-  - Landing page: `yoursite.github.io/llm-analysis/`
-  - Client dashboards: `yoursite.github.io/llm-analysis/currys/`
-- **Automatic Updates**: Updates deploy automatically when code is pushed to main branch
-- **Custom Domain Ready**: Can be configured with custom domains for white-label deployments
+## Frontend Architecture (post-refactor)
 
-### Local Development
-- **Python HTTP Server**: Local testing with `python -m http.server 8000`
-- **Real-time Testing**: Test all functionality locally before deployment
-- **Cross-browser Compatible**: Works across Chrome, Firefox, Safari, Edge
+Single-responsibility components and hooks improve maintainability, testability, and performance.
 
-## Tech Stack
+- Container
+  - `src/components/CompetitiveAnalysisDashboard.tsx`
+    - Owns `activeTab` state and renders tab components
+    - Consumes hooks to load data and derived chart options
+    - Renders breadcrumb, header, and tab nav
 
-### Frontend
-- **React 18**: Modern React with hooks for state management
-- **Recharts**: Professional charting library for interactive visualizations
-- **Tailwind CSS**: Utility-first CSS framework for responsive design
-- **Babel**: In-browser JSX compilation for GitHub Pages compatibility
+- Hooks
+  - `useClientData(config: ClientConfig)`
+    - Attempts to fetch JSON from multiple paths:  
+      `config.dataFile`, `/data/{id}.json`, `./data/{id}.json`, `${PUBLIC_URL}/data/{id}.json`  
+      Returns `{ rawData, loading, error }`
+  - `useProcessedData(rawData, brandKeywords)`
+    - Computes a normalized `ProcessedData` object from raw JSON
+    - Also builds and memoizes chart options for ECharts (treemap and category polar)
+    - Returns `{ data, treemapOption, providerLegend, categoryPolarOption }`
 
-### Data Processing
-- **JSON**: Standardized data format for LLM response storage
+- Tabs (presentational only; no side effects)
+  - `OverviewTab.tsx` (Treemap, key insights, top competitors bar chart)
+  - `CategoryTab.tsx` (Polar stacked bar by category)
+  - `ProvidersTab.tsx` (Top brands per provider with Recharts)
+  - `PositioningTab.tsx` (Detailed table of positions with styled badges/progress)
+  - `ArchiveTab.tsx` (Prompt archive cards with provider/category badges)
 
-### Development Tools
-- **VS Code**: Primary development environment
-- **Git/GitHub**: Version control and deployment
-- **Browser DevTools**: Debugging and testing
+- Charts
+  - `charts/Treemap.tsx`: memoized ReactECharts wrapper
+  - `charts/CategoryPolar.tsx`: memoized ReactECharts wrapper
 
-## Key Dashboard Features
+- Shared Utils
+  - `shared/utils.ts`  
+    - `formatCategory`, `providerColor`, `rankBadge`, `getBarColor(entry, config)`
 
-### 1. Overview Analysis
-- **Top Brand Rankings**: Interactive bar charts showing most-mentioned brands
-- **Competitive Positioning**: Visual comparison of client vs. competitors
-- **Key Metrics Summary**: Quick insights into brand presence and performance
-- **Co-occurrence Analysis**: Brands that appear together with your client
+- Types
+  - `types/analysis.ts`  
+    - `BrandCount`, `CurrysPosition`, `ProviderPosition`, `ProcessedData`
 
-### 2. Category Analysis
-- **Product Category Breakdown**: Performance across different product categories
-- **Category-Specific Rankings**: Where your brand ranks in electronics, appliances, etc.
-- **Gap Analysis**: Categories where competitors dominate
-- **Market Share Visualization**: Relative brand presence by category
+- Client Configuration
+  - `src/config/clients.ts`
+    - Source of truth for each client (id, displayName, colors, keywords, `dataFile`).  
+    - Used by landing page, router, and dashboard loader.
 
-### 3. Provider Analysis
-- **LLM Provider Comparison**: How different AI systems represent your brand
-- **Provider Bias Detection**: Which LLMs favor certain brands
-- **Positioning by Provider**: Detailed breakdown of brand positions across platforms
-- **Provider-Specific Strategies**: Tailored recommendations for each LLM
+---
 
-### 4. Positioning Analysis
-- **Detailed Position Tracking**: Exact position of brand mentions in responses
-- **Query-Level Analysis**: Performance on specific search queries
-- **Trend Analysis**: Position changes over time and across different contexts
-- **Strategic Recommendations**: Actionable advice for improving positioning
+## Data Flow
 
-### Interactive Features
-- **Dynamic Filtering**: Filter by category, provider, or query type
-- **Hover Tooltips**: Detailed information on chart elements
-- **Responsive Design**: Works perfectly on desktop and mobile
-- **Export Capabilities**: Screenshots and data export for presentations
+1) `App.tsx`:
+   - Router uses dynamic route `/dashboard/:clientId`
+   - `DashboardWrapper` resolves `ClientConfig` via `getClientConfig(clientId)` and renders the dashboard
 
-## Multi-Client Architecture
+2) `CompetitiveAnalysisDashboard.tsx`:
+   - `useClientData(config)` loads raw JSON (`rawData`)
+   - `useProcessedData(rawData, config.brandKeywords)` computes:
+     - `ProcessedData` aggregates (top brands, by category, by provider, client positions, competitors)
+     - ECharts options (`treemapOption`, `categoryPolarOption`)
+     - `providerLegend` for the treemap
+   - Renders tabs and passes only required props into each tab
 
-### Scalable Design
-- **Parameterized Components**: Single codebase serves multiple clients
-- **Brand-Specific Styling**: Custom colors and branding for each client
-- **Flexible Data Schema**: Accommodates different industry datasets
-- **Easy Client Addition**: New clients can be added in minutes
+3) Tabs and Charts:
+   - Tabs are presentational; they receive `data` (and chart `option` as needed)
+   - Charts are memoized wrappers for performance and clear separation
 
-### Configuration System
-```json
-{
-  "clientName": "Currys",
-  "dataFile": "currys.json",
-  "primaryColor": "#FF5722",
-  "secondaryColor": "#3498db",
-  "brandKeywords": ["currys", "curry"]
-}
-```
+---
 
-### Benefits
-- **Cost Effective**: One dashboard serves multiple clients
-- **Consistent Experience**: Standardized analysis across all clients
-- **Easy Maintenance**: Updates benefit all clients simultaneously
-- **Professional Branding**: Each client gets their own branded experience
+## JSON Data Schema (expected fields)
 
-## Current Clients & Use Cases
+Each JSON record should contain:
+- `query`: string
+- `query_parent_class`: string (category)
+- `result_provider`: string (e.g., "OpenAI", "Anthropic", "Google", ...)
+- `timestamp`: ISO datetime string (optional but used by Archive)
+- `response`: string (optional; used by Archive to preview LLM output)
+- `companies_mentioned`: array of:
+  - `{ brand_name: string, text_snippet?: string }`
 
-### Currys (Consumer Electronics)
-- **Industry**: UK electronics and appliance retailer
-- **Focus**: Competition against Samsung, Apple, Dyson in electronics queries
-- **Key Insights**: Performance in computer/laptop retail vs. brand manufacturer queries
+Derived fields in processing:
+- `position`: index among companies mentioned starting at 1 for each response
+- `total_companies`: total companies mentioned per response
+- `normalized_position`: `position / total_companies` (0..1)
 
-### Boux Avenue (Fashion/Lingerie)
-- **Industry**: UK fashion and lingerie retailer
-- **Focus**: Performance in fashion and retail-related queries
-- **Key Insights**: Brand positioning in fashion recommendation queries
+---
+
+## How to Add a New Client
+
+1) Add the dataset file:
+   - Place JSON at `currys-analysis/public/data/{clientId}.json`
+
+2) Register client:
+   - Append to `currys-analysis/src/config/clients.ts`
+   - Example:
+     ```ts
+     {
+       id: 'acme',
+       name: 'acme',
+       displayName: 'ACME Corp',
+       description: '...',
+       category: '...',
+       market: '...',
+       dataFile: '/data/acme.json',
+       primaryColor: '#FF5722',
+       secondaryColor: '#3498db',
+       brandKeywords: ['acme'],
+       icon: '...' // decorative string
+     }
+     ```
+
+3) Navigate to `/dashboard/acme` in dev.
+
+Notes:
+- `brandKeywords` are used to detect the client brand in analyses and color bars accordingly.
+- `dataFile` can be absolute (`/data/acme.json`) for production build consistency.
+
+---
+
+## How to Add a New Tab
+
+1) Create a tab component under `src/components/dashboard/tabs/YourTab.tsx`.
+2) Keep it presentational. Accept only the data you need via props.
+3) Update `CompetitiveAnalysisDashboard.tsx`:
+   - Add the tab key to the nav list
+   - Render your tab conditionally when `activeTab === 'yourtab'`
+
+Optional:
+- Heavy visualizations can be split into a chart component in `charts/` and memoized.
+- For performance, you can lazy-load tabs with `React.lazy` and wrap in `<Suspense>`.
+
+---
+
+## How to Add a New Chart
+
+1) Create a reusable chart wrapper in `charts/` (e.g., `MyChart.tsx`).
+2) Build ECharts options in a hook or inside `useProcessedData` and memoize with stable deps.
+3) Pass the options to your chart component as `option`.
+
+Best practices:
+- Use `React.memo` for chart components.
+- Keep pure data transforms inside `useProcessedData`.
+- Avoid rebuilding options on every render; prefer `useMemo`.
+
+---
+
+## Styling & UI
+
+- TailwindCSS utility classes are used for layout and design.
+- Badges for providers and ranks are centralized:
+  - `providerColor(provider: string)` maps providers to color classes
+  - `rankBadge(position: number)` maps rank to style
+- `getBarColor(entry, config)` highlights the client brand vs. others in charts.
+
+---
+
+## Local Development
+
+From the repo root, work inside `currys-analysis/`:
+
+- Install dependencies:
+  - `npm install` (in `currys-analysis/`)
+- Start dev server:
+  - `npm start` (in `currys-analysis/`)
+- Open: http://localhost:3000
+
+Routing base:
+- `App.tsx` computes basename. In production it uses `PUBLIC_URL` so routes work on GitHub Pages.
+
+---
+
+## Deployment
+
+The CRA project is configured for GitHub Pages:
+
+- Build:
+  - `npm run build` (in `currys-analysis/`)
+- Deploy (script example in `package.json`):
+  - `"deploy": "cross-env PUBLIC_URL=https://overripedatascientist.github.io/llm-analysis npm run build && gh-pages -d build"`
+
+The `PUBLIC_URL` ensures asset and router base paths are correct on GitHub Pages.
+
+---
+
+## Performance Notes
+
+- Heavy computations and ECharts options are memoized in `useProcessedData`.
+- Chart components are memoized (`React.memo`) to reduce re-renders.
+- Consider virtualizing the Positioning table if datasets become very large (e.g., `react-window`).
+- Optional improvement: lazy-load tab components using `React.lazy`.
+
+---
+
+## Coding Conventions
+
+- TypeScript everywhere; shared types in `types/analysis.ts`.
+- Keep hooks pure and side-effect free beyond their responsibility.
+- Prefer dependency injection via props; tabs remain presentational.
+- Avoid fetching inside tab components; fetching is centralized in `useClientData`.
+
+---
+
+## Changelog (Aug 2025 Refactor)
+
+- Extracted data fetching to `useClientData`
+- Extracted data processing and chart options to `useProcessedData`
+- Split monolithic `CompetitiveAnalysisDashboard.tsx` into:
+  - Container + 5 tab components + 2 chart components
+  - Shared utils and types
+- Behavior preserved; architecture simplified for maintainability and extensibility.
+
+---
+
+## Quick Reference
+
+- Entry point: `src/App.tsx` (Router)
+- Client registry: `src/config/clients.ts`
+- Data location: `public/data/*.json`
+- Dashboard container: `src/components/CompetitiveAnalysisDashboard.tsx`
+- Hooks: `dashboard/hooks/`
+- Tabs: `dashboard/tabs/`
+- Charts: `dashboard/charts/`
+- Utils: `dashboard/shared/utils.ts`
+- Types: `dashboard/types/analysis.ts`
+
+---
+
+## Troubleshooting
+
+- Data not loading:
+  - Check network panel for 404s on `/data/{id}.json`
+  - Ensure `clients.ts` `dataFile` points to `/data/{id}.json` and file exists in `public/data/`
+- Routing issues in production:
+  - Confirm `PUBLIC_URL` is set in deploy script and matches the GitHub Pages URL
+- Styling anomalies:
+  - Ensure Tailwind is configured (config files present) and class names are intact
+- Charts not rendering:
+  - Verify ECharts options shape; check console for ECharts errors
+  - Ensure `echarts-for-react` and `echarts` are installed and versions compatible
+
+---
 
 This project represents a first-of-its-kind solution for the emerging challenge of AI visibility optimization, providing brands with the insights they need to succeed in an AI-first world.
