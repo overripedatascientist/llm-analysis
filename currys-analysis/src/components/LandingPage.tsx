@@ -17,7 +17,8 @@ const LandingPage: React.FC = () => {
         'found': 'digital-marketing-2025',
         'telehouse': 'data-centers-2025',
         'toolstation': 'tools-hardware-2025',
-        'pwc': 'professional-services-2025'
+        'pwc': 'professional-services-2025',
+        'pwc_custom': 'professional-services-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -32,7 +33,8 @@ const LandingPage: React.FC = () => {
             'found': '31 responses analyzed',
             'telehouse': '29 responses analyzed',
             'toolstation': '36 responses analyzed',
-            'pwc': '43 responses analyzed'
+            'pwc': '43 responses analyzed',
+            'pwc_custom': 'Analysis available'
         };
         return stats[clientId] || 'Analysis available';
     };

@@ -143,6 +143,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#4B4B4D',
         brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
         icon: 'briefcase'
+    },
+    'pwc_custom': {
+        id: 'pwc_custom',
+        name: 'pwc_custom',
+        displayName: 'Professional Services Company (Custom Search)',
+        description: 'Consulting & Professional Services',
+        category: 'Professional Services',
+        market: 'Global Professional Services',
+        dataFile: '/data/pwc_custom.json',
+        primaryColor: '#FF7900',
+        secondaryColor: '#4B4B4D',
+        brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
+        icon: 'briefcase'
     }
 };
 
