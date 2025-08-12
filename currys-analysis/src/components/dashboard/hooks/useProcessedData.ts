@@ -327,6 +327,13 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       data: brandsTop.map((brand) => countsByCatBrand[cat][brand] || 0)
     }));
 
+    const condenseLegend = (name: string) => {
+      const m = name.match(/\(([^)]+)\)/);
+      if (m && m[1] && m[1].length <= 12) return m[1];
+      const cleaned = name.replace(/\s+/g, ' ').trim();
+      return cleaned.length > 28 ? cleaned.slice(0, 28) + '…' : cleaned;
+    };
+
     const option = {
       tooltip: {
         trigger: 'axis',
@@ -355,13 +362,25 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
         }
       },
       radiusAxis: {},
-      polar: {},
+      polar: {
+        center: ['36%', '52%'],
+        radius: '70%'
+      },
       series,
       legend: {
         type: 'scroll',
         orient: 'vertical',
-        right: 0,
-        top: 'middle'
+        left: '68%',
+        top: 'middle',
+        bottom: 0,
+        width: '30%',
+        itemWidth: 12,
+        itemHeight: 10,
+        icon: 'circle',
+        pageIconColor: '#4b5563',
+        pageTextStyle: { color: '#4b5563' },
+        formatter: (name: string) => condenseLegend(name),
+        tooltip: { show: true }
       }
     };
 
