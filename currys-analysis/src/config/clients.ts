@@ -118,6 +118,19 @@ export const clients: Record<string, ClientConfig> = {
         brandKeywords: ['telehouse', 'tele house'],
         icon: 'server'
     },
+    'digital-realty': {
+        id: 'digital-realty',
+        name: 'digital-realty',
+        displayName: 'Data Center Company',
+        description: 'Data Centers & Colocation Services',
+        category: 'Technology',
+        market: 'US Data Centers',
+        dataFile: '/data/digital-realty.json',
+        primaryColor: '#0E6EB8',
+        secondaryColor: '#00A1E0',
+        brandKeywords: ['digital realty', 'digital realty trust', 'digital-realty', 'digitalrealty', 'dlr'],
+        icon: 'server'
+    },
     'toolstation': {
         id: 'toolstation',
         name: 'toolstation',

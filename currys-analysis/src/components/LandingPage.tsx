@@ -16,6 +16,7 @@ const LandingPage: React.FC = () => {
         'cvc-capital-partners': 'private-equity-2025',
         'found': 'digital-marketing-2025',
         'telehouse': 'data-centers-2025',
+        'digital-realty': 'data-centers-us-2025',
         'toolstation': 'tools-hardware-2025',
         'pwc': 'professional-services-2025',
         'pwc_custom': 'professional-services-2025'
@@ -32,6 +33,7 @@ const LandingPage: React.FC = () => {
             'cvc-capital-partners': '38 responses analyzed',
             'found': '31 responses analyzed',
             'telehouse': '29 responses analyzed',
+            'digital-realty': 'Analysis available',
             'toolstation': '36 responses analyzed',
             'pwc': '43 responses analyzed',
             'pwc_custom': 'Analysis available'
