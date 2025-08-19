@@ -19,7 +19,8 @@ const LandingPage: React.FC = () => {
         'digital-realty': 'data-centers-us-2025',
         'toolstation': 'tools-hardware-2025',
         'pwc': 'professional-services-2025',
-        'pwc_custom': 'professional-services-2025'
+        'pwc_custom': 'professional-services-2025',
+        'pwc_custom_us': 'professional-services-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -36,7 +37,8 @@ const LandingPage: React.FC = () => {
             'digital-realty': 'Analysis available',
             'toolstation': '36 responses analyzed',
             'pwc': '43 responses analyzed',
-            'pwc_custom': 'Analysis available'
+            'pwc_custom': 'Analysis available',
+            'pwc_custom_us': 'Analysis available'
         };
         return stats[clientId] || 'Analysis available';
     };
