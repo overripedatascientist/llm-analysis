@@ -183,6 +183,19 @@ export const clients: Record<string, ClientConfig> = {
         brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
         icon: 'briefcase'
     },
+    'pwc_us': {
+        id: 'pwc_us',
+        name: 'pwc_us',
+        displayName: 'Professional Services Company (US)',
+        description: 'Consulting & Professional Services',
+        category: 'Professional Services',
+        market: 'US Professional Services',
+        dataFile: '/data/pwc_us.json',
+        primaryColor: '#FF7900',
+        secondaryColor: '#4B4B4D',
+        brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
+        icon: 'briefcase'
+    },
     'napier_uk': {
         id: 'napier_uk',
         name: 'napier_uk',

@@ -118,6 +118,7 @@ const LandingPage: React.FC = () => {
     pwc: 'professional-services-2025',
     pwc_custom: 'professional-services-2025',
     pwc_custom_us: 'professional-services-2025',
+    pwc_us: 'professional-services-2025',
     napier_uk: 'fintech-uk-2025',
     napier_us: 'fintech-us-2025',
     taggstar: 'social-proof-2025',
