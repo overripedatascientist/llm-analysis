@@ -20,7 +20,11 @@ const LandingPage: React.FC = () => {
         'toolstation': 'tools-hardware-2025',
         'pwc': 'professional-services-2025',
         'pwc_custom': 'professional-services-2025',
-        'pwc_custom_us': 'professional-services-2025'
+        'pwc_custom_us': 'professional-services-2025',
+        'napier_uk': 'fintech-uk-2025',
+        'napier_us': 'fintech-us-2025',
+        'taggstar': 'social-proof-2025',
+        'oag': 'aviation-data-2025'
     };
 
     const getClientStats = (clientId: string) => {
@@ -38,7 +42,11 @@ const LandingPage: React.FC = () => {
             'toolstation': '36 responses analyzed',
             'pwc': '43 responses analyzed',
             'pwc_custom': 'Analysis available',
-            'pwc_custom_us': 'Analysis available'
+            'pwc_custom_us': 'Analysis available',
+            'napier_uk': 'Analysis available',
+            'napier_us': 'Analysis available',
+            'taggstar': 'Analysis available',
+            'oag': 'Analysis available'
         };
         return stats[clientId] || 'Analysis available';
     };

@@ -182,6 +182,58 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#4B4B4D',
         brandKeywords: ['pwc', 'pricewaterhousecoopers', 'price waterhouse coopers'],
         icon: 'briefcase'
+    },
+    'napier_uk': {
+        id: 'napier_uk',
+        name: 'napier_uk',
+        displayName: 'Fintech Company (UK)',
+        description: 'Financial crime compliance and AML platform',
+        category: 'FinTech',
+        market: 'UK Market',
+        dataFile: '/data/napier_uk.json',
+        primaryColor: '#0E7C86',
+        secondaryColor: '#F2B134',
+        brandKeywords: ['napier', 'napier ai'],
+        icon: 'shield'
+    },
+    'napier_us': {
+        id: 'napier_us',
+        name: 'napier_us',
+        displayName: 'Fintech Company (US)',
+        description: 'Financial crime compliance and AML platform',
+        category: 'FinTech',
+        market: 'US Market',
+        dataFile: '/data/napier_us.json',
+        primaryColor: '#0E7C86',
+        secondaryColor: '#F2B134',
+        brandKeywords: ['napier', 'napier ai'],
+        icon: 'shield'
+    },
+    'taggstar': {
+        id: 'taggstar',
+        name: 'taggstar',
+        displayName: 'Social Media Analytics Company',
+        description: 'Social proof and product recommendations for e-commerce',
+        category: 'Technology',
+        market: 'Global E-commerce',
+        dataFile: '/data/taggstar.json',
+        primaryColor: '#9C27B0',
+        secondaryColor: '#FF9800',
+        brandKeywords: ['taggstar', 'tagstarr'],
+        icon: 'star'
+    },
+    'oag': {
+        id: 'oag',
+        name: 'oag',
+        displayName: 'Flight Data Company',
+        description: 'Global flight data and analytics',
+        category: 'Aviation',
+        market: 'Global Aviation',
+        dataFile: '/data/oag.json',
+        primaryColor: '#1E88E5',
+        secondaryColor: '#FFC107',
+        brandKeywords: ['oag'],
+        icon: 'plane'
     }
 };
 
