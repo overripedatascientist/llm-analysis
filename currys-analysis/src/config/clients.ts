@@ -247,6 +247,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#FFC107',
         brandKeywords: ['oag'],
         icon: 'plane'
+    },
+    'secret_sales': {
+        id: 'secret_sales',
+        name: 'secret_sales',
+        displayName: 'Fashion Outlet',
+        description: 'Designer and premium fashion outlet marketplace',
+        category: 'Fashion',
+        market: 'UK Retail',
+        dataFile: '/data/secret_sales.json',
+        primaryColor: '#111827',
+        secondaryColor: '#F59E0B',
+        brandKeywords: ['secret sales', 'secretsales', 'secret-sales'],
+        icon: 'fashion'
     }
 };
 
