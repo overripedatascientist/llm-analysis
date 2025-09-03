@@ -70,8 +70,8 @@ export default function OverviewTab({
           <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-4">
             <h3 className="font-bold mb-2">{config.displayName} Presence in Results</h3>
             <p>
-              {config.displayName} appears in {data.clientPositions.length} out of {data.allMentions.length} (
-              {((data.clientPositions.length / data.allMentions.length) * 100).toFixed(1)}%) total LLM responses.
+              {config.displayName} appears in {data.responsesWithClient} of {data.totalResponses} LLM responses (
+              {data.totalResponses > 0 ? ((data.responsesWithClient / data.totalResponses) * 100).toFixed(1) : '0.0'}%).
             </p>
             {data.avgPosition > 0 && (
               <>

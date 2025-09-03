@@ -122,6 +122,15 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       .slice(0, 10)
       .map(([brand, count]) => ({ brand, count }));
 
+    // New: response-level presence metrics
+    const totalResponses = rawData.length;
+    const responsesWithClient = rawData.reduce((acc, item) => {
+      const hasClient = (item.companies_mentioned || []).some((comp: any) =>
+        (brandKeywords || []).some((k) => (comp.brand_name || '').toLowerCase().includes(k.toLowerCase()))
+      );
+      return acc + (hasClient ? 1 : 0);
+    }, 0);
+
     return {
       topBrands,
       brandsByCategory,
@@ -131,7 +140,9 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       avgNormalizedPosition,
       avgPositionByProvider,
       topCompetitors,
-      allMentions
+      allMentions,
+      totalResponses,
+      responsesWithClient
     };
   }, [rawData, brandKeywords]);
 

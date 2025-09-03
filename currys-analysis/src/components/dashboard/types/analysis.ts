@@ -27,4 +27,6 @@ export interface ProcessedData {
   avgPositionByProvider: ProviderPosition[];
   topCompetitors: BrandCount[];
   allMentions: any[];
+  totalResponses: number;
+  responsesWithClient: number;
 }
