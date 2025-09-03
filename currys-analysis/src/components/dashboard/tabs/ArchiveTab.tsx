@@ -24,7 +24,7 @@ export default function ArchiveTab({
               <div
                 key={idx}
                 className={`relative rounded-xl border ring-1 ring-inset ${
-                  mentionsClient ? 'ring-amber-200' : 'ring-gray-200'
+                  mentionsClient ? 'ring-brand-orange' : 'ring-gray-200'
                 } bg-white/70 backdrop-blur shadow-sm hover:shadow-md transition-shadow`}
               >
                 <div className="p-4 space-y-3">
@@ -36,7 +36,7 @@ export default function ArchiveTab({
                       {entry.query}
                     </h3>
                     {mentionsClient && (
-                      <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-200">
+                      <span className="shrink-0 inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-brand-orange text-white ring-1 ring-inset ring-brand-orange">
                         Mentions Client
                       </span>
                     )}
@@ -53,7 +53,7 @@ export default function ArchiveTab({
                     </span>
 
                     {entry.query_parent_class && (
-                      <span className="inline-flex px-2 py-1 rounded-full ring-1 ring-inset bg-gray-100 text-gray-700 ring-gray-200">
+                      <span className="inline-flex px-2 py-1 rounded-full ring-1 ring-inset bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light">
                         {formatCategory(entry.query_parent_class)}
                       </span>
                     )}
@@ -65,7 +65,7 @@ export default function ArchiveTab({
                   </div>
 
                   <details className="mt-1">
-                    <summary className="cursor-pointer select-none text-sm font-medium text-blue-700 hover:text-blue-900">
+                    <summary className="cursor-pointer select-none text-sm font-medium text-brand-purple hover:text-brand-light-purple">
                       View Response
                     </summary>
                     <pre className="mt-2 p-3 bg-slate-50 rounded-lg border text-xs text-gray-800 whitespace-pre-wrap max-h-64 overflow-auto">

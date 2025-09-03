@@ -9,27 +9,29 @@ export const formatCategory = (category: string) => {
 };
 
 export const providerColor = (provider: string) => {
+  // Map providers to Luminr brand palette (centralized in tailwind.config + theme.ts)
   const map: Record<string, string> = {
-    OpenAI: 'bg-blue-100 text-blue-700 ring-blue-200',
-    'OpenAI (GPT-4o)': 'bg-blue-100 text-blue-700 ring-blue-200',
-    Anthropic: 'bg-amber-100 text-amber-700 ring-amber-200',
-    Google: 'bg-green-100 text-green-700 ring-green-200',
-    Gemini: 'bg-green-100 text-green-700 ring-green-200',
-    'Google Gemini': 'bg-green-100 text-green-700 ring-green-200',
-    Microsoft: 'bg-violet-100 text-violet-700 ring-violet-200',
-    Perplexity: 'bg-cyan-100 text-cyan-700 ring-cyan-200',
-    Meta: 'bg-rose-100 text-rose-700 ring-rose-200',
-    Cohere: 'bg-fuchsia-100 text-fuchsia-700 ring-fuchsia-200',
-    Mistral: 'bg-pink-100 text-pink-700 ring-pink-200'
+    OpenAI: 'bg-brand-light-purple text-white ring-brand-light-purple',
+    'OpenAI (GPT-4o)': 'bg-brand-light-purple text-white ring-brand-light-purple',
+    Anthropic: 'bg-brand-orange text-white ring-brand-orange',
+    Google: 'bg-brand-purple text-white ring-brand-purple',
+    Gemini: 'bg-brand-purple text-white ring-brand-purple',
+    'Google Gemini': 'bg-brand-purple text-white ring-brand-purple',
+    Microsoft: 'bg-brand-red text-white ring-brand-red',
+    Perplexity: 'bg-brand-dark-purple text-white ring-brand-dark-purple',
+    Meta: 'bg-brand-red text-white ring-brand-red',
+    Cohere: 'bg-brand-light-purple text-white ring-brand-light-purple',
+    Mistral: 'bg-brand-orange text-white ring-brand-orange'
   };
-  return map[provider] || 'bg-gray-100 text-gray-700 ring-gray-200';
+  return map[provider] || 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light';
 };
 
 export const rankBadge = (position: number) => {
-  if (position === 1) return 'bg-emerald-100 text-emerald-700 ring-emerald-200';
-  if (position === 2) return 'bg-lime-100 text-lime-700 ring-lime-200';
-  if (position <= 5) return 'bg-yellow-100 text-yellow-800 ring-yellow-200';
-  return 'bg-gray-100 text-gray-700 ring-gray-200';
+  // Unified ranks to brand colors
+  if (position === 1) return 'bg-brand-orange text-white ring-brand-orange';
+  if (position === 2) return 'bg-brand-purple text-white ring-brand-purple';
+  if (position <= 5) return 'bg-brand-light-purple text-white ring-brand-light-purple';
+  return 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light';
 };
 
 export const getBarColor = (entry: { brand: string }, config: ClientConfig) => {
