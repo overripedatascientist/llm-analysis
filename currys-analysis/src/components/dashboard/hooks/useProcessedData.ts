@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import type { ProcessedData, BrandCount } from '../types/analysis';
 import { formatCategory } from '../shared/utils';
+import { brand as themeBrand, hexToRgba } from '../../../config/theme';
 
 export function useProcessedData(rawData: any[] | null, brandKeywords: string[]) {
   const data: ProcessedData | null = useMemo(() => {
@@ -122,6 +123,15 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       .slice(0, 10)
       .map(([brand, count]) => ({ brand, count }));
 
+    // New: response-level presence metrics
+    const totalResponses = rawData.length;
+    const responsesWithClient = rawData.reduce((acc, item) => {
+      const hasClient = (item.companies_mentioned || []).some((comp: any) =>
+        (brandKeywords || []).some((k) => (comp.brand_name || '').toLowerCase().includes(k.toLowerCase()))
+      );
+      return acc + (hasClient ? 1 : 0);
+    }, 0);
+
     return {
       topBrands,
       brandsByCategory,
@@ -131,7 +141,9 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       avgNormalizedPosition,
       avgPositionByProvider,
       topCompetitors,
-      allMentions
+      allMentions,
+      totalResponses,
+      responsesWithClient
     };
   }, [rawData, brandKeywords]);
 
@@ -160,26 +172,82 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
 
     const topProviders = providerTotals.sort((a, b) => b[1] - a[1]).slice(0, MAX_PROVIDERS).map(([prov]) => prov);
 
-    const defaultPalette = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'];
-    const explicitMap: Record<string, string> = {
-      OpenAI: '#1f77b4',
-      'OpenAI (GPT-4o)': '#1f77b4',
-      Anthropic: '#ff7f0e',
-      Google: '#2ca02c',
-      Gemini: '#2ca02c',
-      'Google Gemini': '#2ca02c',
-      Microsoft: '#9467bd',
-      Perplexity: '#17becf',
-      Meta: '#d62728',
-      Cohere: '#8c564b',
-      Mistral: '#e377c2',
-      Unknown: '#7f7f7f'
+    // Luminr brand palette for providers
+    const defaultPalette = [
+      themeBrand.purple,
+      themeBrand.lightPurple,
+      themeBrand.orange,
+      themeBrand.red,
+      themeBrand.darkPurple,
+      themeBrand.lightPurple,
+      themeBrand.orange,
+      themeBrand.purple,
+      themeBrand.red,
+      themeBrand.darkPurple
+    ];
+    // Explicit color mapping (case-insensitive) to ensure distinct provider colors
+    const explicitLower: Record<string, string> = {
+      openai: themeBrand.lightPurple,
+      'openai (gpt-4o)': themeBrand.lightPurple,
+      anthropic: themeBrand.orange,
+      google: themeBrand.purple,
+      gemini: themeBrand.lightGrey, // make Gemini clearly distinct from OpenAI purple
+      'google gemini': themeBrand.lightGrey,
+      microsoft: themeBrand.red,
+      perplexity: themeBrand.darkPurple,
+      meta: themeBrand.red,
+      cohere: themeBrand.lightPurple,
+      mistral: themeBrand.orange,
+      unknown: themeBrand.lightGrey
     };
 
     const colorMap: Record<string, string> = {};
     topProviders.forEach((name, idx) => {
-      colorMap[name] = explicitMap[name] || defaultPalette[idx % defaultPalette.length];
+      const key = (name || '').toLowerCase();
+      colorMap[name] = explicitLower[key] || defaultPalette[idx % defaultPalette.length];
     });
+
+    // Audience weights (MAU) by provider for treemap sizing (case-insensitive)
+    const AUDIENCE_MAU: Record<string, number> = {
+      openai: 1.4e9,
+      'openai (gpt-4o)': 1.4e9,
+      gpt4o: 1.4e9,
+      'gpt-4o': 1.4e9,
+      anthropic: 19e6,
+      claude: 19e6,
+      'claude 3': 19e6,
+      gemini: 1.05e9,
+      'google gemini': 1.05e9,
+      'google ai overview': 5e8,
+      'ai overview': 5e8,
+      google: 5e8
+    };
+
+    const getProviderAudience = (name: string | undefined | null): number | undefined => {
+      const n = (name || '').toString().trim().toLowerCase();
+      if (!n) return undefined;
+      if (AUDIENCE_MAU[n] != null) return AUDIENCE_MAU[n];
+      // heuristic mappings
+      if (n.includes('openai') || n.startsWith('gpt')) return AUDIENCE_MAU['openai'];
+      if (n.includes('anthropic') || n.includes('claude')) return AUDIENCE_MAU['anthropic'];
+      if (n.includes('gemini')) return AUDIENCE_MAU['gemini'];
+      if (n.includes('ai overview')) return AUDIENCE_MAU['google ai overview'];
+      if (n === 'google') return AUDIENCE_MAU['google'];
+      return undefined;
+    };
+
+    const formatAudience = (n?: number) => {
+      if (!n || n < 1) return '';
+      if (n >= 1e9) return `${(n / 1e9).toFixed(2).replace(/\.0+$/, '')}B MAU`;
+      if (n >= 1e6) return `${Math.round(n / 1e6)}M MAU`;
+      return `${n.toLocaleString()} MAU`;
+    };
+
+    // Shorten long brand names to avoid squashed text in small tiles
+    const condenseName = (name: string) => {
+      const cleaned = (name || '').replace(/\s+/g, ' ').trim();
+      return cleaned.length > 16 ? cleaned.slice(0, 16) + '…' : cleaned;
+    };
 
     const dataNodes = topProviders.map((provider) => {
       const brandsMap = counts[provider] || {};
@@ -188,31 +256,48 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
 
       const providerTotalFull = Object.values(brandsMap).reduce((s, v) => s + v, 0);
 
-      const children = limited.map(([brand, count]) => {
-        const client = isClientBrand(brand);
+      const children = limited.map(([brandName, count]) => {
+        const client = isClientBrand(brandName);
+        const aud = getProviderAudience(provider);
+        const audWeight = aud ? Math.log10(aud) ** 3 : 1;
         return {
-          name: brand,
-          value: count,
+          name: brandName,
+          value: count * audWeight,
+          rawCount: count,
+          mau: aud,
+          mauWeight: audWeight,
+          mauLabel: formatAudience(aud),
           provider,
           isClient: client,
           providerTotal: providerTotalFull,
-          itemStyle: {
-            color: colorMap[provider],
-            borderColor: client ? '#111827' : '#ffffff',
-            borderWidth: client ? 2 : 1,
-            shadowBlur: client ? 12 : 0,
-            shadowColor: client ? 'rgba(0,0,0,0.35)' : 'transparent'
-          },
-          label: client ? { backgroundColor: 'rgba(17,24,39,0.25)', fontWeight: 'bold', padding: [2, 4], borderRadius: 3 } : undefined
+            itemStyle: {
+              color: colorMap[provider],
+              borderColor: client ? themeBrand.darkPurple : '#ffffff',
+              borderWidth: client ? 2 : 1,
+              shadowBlur: client ? 12 : 0,
+              shadowColor: client ? 'rgba(0,0,0,0.35)' : 'transparent'
+            },
+            label: client
+              ? {
+                  backgroundColor: hexToRgba(themeBrand.darkPurple, 0.25),
+                  fontWeight: 'bold',
+                  padding: [2, 4],
+                  borderRadius: 3,
+                  color: ((provider || '').toLowerCase().includes('gemini')) ? '#000' : '#fff'
+                }
+              : { color: ((provider || '').toLowerCase().includes('gemini')) ? '#000' : '#fff' }
         };
       });
 
       const total = children.reduce((sum, c: any) => sum + (c.value as number), 0);
+      const totalRaw = children.reduce((sum, c: any) => sum + (c.rawCount as number), 0);
       return {
         name: provider,
         value: total,
+        totalRaw,
         children,
-        itemStyle: { color: colorMap[provider], borderColor: '#ffffff', borderWidth: 1 }
+        itemStyle: { color: colorMap[provider], borderColor: '#ffffff', borderWidth: 1 },
+        label: { color: ((provider || '').toLowerCase().includes('gemini')) ? '#000' : '#fff' }
       };
     });
 
@@ -222,14 +307,17 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
         formatter: (info: any) => {
           const node = info?.data || {};
           if (node.children) {
-            return `${node.name}<br/>Total mentions (top ${MAX_BRANDS_PER_PROVIDER}): ${node.value}`;
+            const totalRaw = typeof node.totalRaw === 'number' ? node.totalRaw : node.value;
+            return `${node.name}<br/>Total mentions (top ${MAX_BRANDS_PER_PROVIDER}): ${totalRaw}`;
           } else {
             const prov = node.provider || (info?.treePathInfo && info.treePathInfo[1] && info.treePathInfo[1].name) || '';
-            const share = node.providerTotal ? ((node.value / node.providerTotal) * 100).toFixed(1) + '%' : '';
+            const raw = typeof node.rawCount === 'number' ? node.rawCount : node.value;
+            const share = node.providerTotal ? ((raw / node.providerTotal) * 100).toFixed(1) + '%' : '';
             const highlighted = node.isClient
-              ? '<span style="padding:2px 6px;border-radius:4px;background:#111827;color:#fff;margin-right:6px;">Client</span>'
+              ? '<span style="padding:2px 6px;border-radius:4px;background:#281535;color:#fff;margin-right:6px;">Client</span>'
               : '';
-            return `${highlighted}<b>${node.name}</b><br/>Provider: ${prov}<br/>Mentions: ${node.value}${share ? ` (${share} of ${prov})` : ''}`;
+            const mau = node.mauLabel ? ` | Audience: ${node.mauLabel}` : '';
+            return `${highlighted}<b>${node.name}</b><br/>Provider: ${prov}<br/>Mentions: ${raw}${share ? ` (${share} of ${prov})` : ''}${mau}</span>`;
           }
         }
       },
@@ -255,21 +343,31 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
             const h = params.rect.height;
             const isClient = !!params?.data?.isClient;
             const isProvider = !!params?.data?.children;
-            return { hide: (w < 80 || h < 38) && !isClient && !isProvider };
+            // Hide labels earlier on tiny tiles to avoid squashed text
+            return { hide: (w < 110 || h < 46) && !isClient && !isProvider };
           },
           label: {
             show: true,
-            formatter: (p: any) => `${p.name}\n${p.value}`,
+            formatter: (p: any) => {
+              const d = p?.data || {};
+              if (d && d.children) {
+                const totalRaw = typeof d.totalRaw === 'number' ? d.totalRaw : p.value;
+                return `${p.name}\n${totalRaw}`;
+              }
+              const mentions = typeof d.rawCount === 'number' ? d.rawCount : p.value;
+              return `${condenseName(p.name)}\n${mentions}`;
+            },
             color: '#fff',
             fontSize: 12,
-            lineHeight: 16,
+            fontWeight: 500,
+            lineHeight: 18,
             backgroundColor: 'transparent',
-            overflow: 'break'
+            overflow: 'truncate'
           },
           upperLabel: { show: false },
           emphasis: {
             label: { show: true },
-            itemStyle: { borderColor: '#111827', borderWidth: 2, shadowBlur: 16, shadowColor: 'rgba(0,0,0,0.45)' }
+            itemStyle: { borderColor: themeBrand.darkPurple, borderWidth: 2, shadowBlur: 16, shadowColor: 'rgba(0,0,0,0.45)' }
           },
           itemStyle: { borderColor: '#ffffff', borderWidth: 1, gapWidth: 1 },
           levels: [

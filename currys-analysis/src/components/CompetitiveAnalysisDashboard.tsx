@@ -27,7 +27,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       <div className="p-4">
         <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
           <nav className="text-sm text-left">
-            <Link to="/" className="text-blue-700 hover:text-blue-900">
+            <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
               ← Back to Dashboard Selection
             </Link>
           </nav>
@@ -42,7 +42,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       <div className="p-4">
         <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
           <nav className="text-sm text-left">
-            <Link to="/" className="text-blue-700 hover:text-blue-900">
+            <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
               ← Back to Dashboard Selection
             </Link>
           </nav>
@@ -65,7 +65,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       {/* Navigation breadcrumb */}
       <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
         <nav className="text-sm text-left">
-          <Link to="/" className="text-blue-700 hover:text-blue-900">
+          <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
             ← Back to Dashboard Selection
           </Link>
         </nav>
@@ -84,7 +84,7 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
               <button
                 key={tab}
                 className={`px-3 py-1.5 rounded-full text-sm capitalize transition-colors ${
-                  activeTab === tab ? 'bg-blue-600 text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'
+                  activeTab === tab ? 'bg-brand-purple text-white shadow-sm' : 'text-gray-700 hover:bg-gray-100'
                 }`}
                 onClick={() => setActiveTab(tab)}
               >

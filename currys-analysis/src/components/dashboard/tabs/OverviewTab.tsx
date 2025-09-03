@@ -66,36 +66,127 @@ export default function OverviewTab({
 
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-2">Key Insights</h2>
+        {/* Enhanced, minimal cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-          <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-4">
-            <h3 className="font-bold mb-2">{config.displayName} Presence in Results</h3>
-            <p>
-              {config.displayName} appears in {data.clientPositions.length} out of {data.allMentions.length} (
-              {((data.clientPositions.length / data.allMentions.length) * 100).toFixed(1)}%) total LLM responses.
-            </p>
-            {data.avgPosition > 0 && (
-              <>
-                <p>
-                  On average, {config.displayName} appears {data.avgPosition.toFixed(2)} in the list of mentioned
-                  companies.
-                </p>
-                <p>
-                  This positions {config.displayName} in the top {(data.avgNormalizedPosition * 100).toFixed(2)}% of
-                  mentioned brands.
-                </p>
-              </>
-            )}
+          {/* Presence summary: ultra-clear KPI layout */}
+          <div className="rounded-2xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-5">
+            {(() => {
+              const total = data.totalResponses || 0;
+              const withBrand = data.responsesWithClient || 0;
+              const missing = Math.max(0, total - withBrand);
+              const rate = total ? withBrand / total : 0;
+              const pctText = (rate * 100).toFixed(1);
+              const pctWidth = `${(rate * 100).toFixed(1)}%`;
+              const base = config.primaryColor || '#2563eb';
+              const avgPos = data.avgPosition > 0 ? data.avgPosition.toFixed(2) : '—';
+              const percentile = (data.avgNormalizedPosition * 100).toFixed(1);
+              return (
+                <div>
+                  <div className="flex items-end justify-between gap-4">
+                    <h3 className="font-semibold text-gray-900">{config.displayName} presence overview</h3>
+                    <div className="text-xs text-gray-500">Based on {total} responses</div>
+                  </div>
+
+                  <div className="mt-4 grid grid-cols-1 md:grid-cols-12 gap-6">
+                    {/* Left: headline % */}
+                    <div className="md:col-span-4">
+                      <div className="text-5xl font-semibold tabular-nums">{pctText}%</div>
+                      <div className="text-sm text-gray-500">presence rate</div>
+                    </div>
+
+                    {/* Right: 3 concise KPI tiles */}
+                    <div className="md:col-span-8 grid grid-cols-1 sm:grid-cols-3 gap-3">
+                      <div className="rounded-xl border border-gray-100 bg-white/60 p-3">
+                        <div className="text-xs uppercase tracking-wide text-gray-500">Coverage</div>
+                        <div className="mt-1 text-lg font-semibold">
+                          <span className="tabular-nums">{withBrand}</span>
+                          <span className="text-gray-500"> / </span>
+                          <span className="tabular-nums">{total}</span>
+                        </div>
+                        <div className="text-xs text-gray-500">responses include {config.displayName}</div>
+                      </div>
+                      <div className="rounded-xl border border-gray-100 bg-white/60 p-3">
+                        <div className="text-xs uppercase tracking-wide text-gray-500">Avg position</div>
+                        <div className="mt-1">
+                          <div className="text-2xl font-semibold tabular-nums">{avgPos}</div>
+                          <div className="text-xs text-gray-500" title="1 = first brand mentioned">1 = best</div>
+                        </div>
+                      </div>
+                      <div className="rounded-xl border border-gray-100 bg-white/60 p-3">
+                        <div className="text-xs uppercase tracking-wide text-gray-500">Percentile</div>
+                        <div className="mt-1">
+                          <span
+                            className="inline-flex items-center rounded-full px-2.5 py-1 text-sm font-medium"
+                            style={{ backgroundColor: base, color: 'white', opacity: 0.9 }}
+                          >
+                            Top {percentile}%
+                          </span>
+                        </div>
+                        <div className="mt-1 text-xs text-gray-500">relative to other mentioned brands</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bottom: progress bar with explicit legend and formula */}
+                  <div className="mt-5">
+                    <div className="h-2 w-full rounded-full bg-gray-100 relative overflow-hidden">
+                      <div
+                        className="absolute inset-y-0 left-0 rounded-full"
+                        style={{ width: pctWidth, backgroundColor: base, opacity: 0.3 }}
+                      />
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center justify-between text-xs text-gray-600">
+                      <div className="flex items-center gap-4">
+                        <span className="inline-flex items-center gap-1">
+                          <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: base }} />
+                          Appears {withBrand}
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <span className="w-2.5 h-2.5 rounded-full bg-gray-300" />
+                          Missing {missing}
+                        </span>
+                      </div>
+                      <div className="text-[11px] text-gray-500">
+                        Presence rate = responses including {config.displayName} / total responses
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
-          <div className="rounded-xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-4">
-            <h3 className="font-bold mb-2">Top Competitors</h3>
-            <p>Based on co-occurrence with {config.displayName} in LLM responses:</p>
-            <ol className="list-decimal pl-5">
-              {data.topCompetitors.slice(0, 5).map((comp, idx) => (
-                <li key={idx}>
-                  {comp.brand} ({comp.count} co-occurrences)
-                </li>
-              ))}
-            </ol>
+
+          {/* Competitors card with subtle bars */}
+          <div className="rounded-2xl border border-gray-200/80 shadow-sm bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 p-5">
+            <h3 className="font-semibold text-gray-900 mb-3">Top competitors</h3>
+            <p className="text-gray-700 mb-3">
+              Most frequent co-occurrences with {config.displayName}:
+            </p>
+
+            <div className="space-y-2">
+              {data.topCompetitors.slice(0, 5).map((comp, idx) => {
+                const max = Math.max(...data.topCompetitors.slice(0, 5).map((c) => c.count)) || 1;
+                const pct = Math.round((comp.count / max) * 100);
+                const base = config.primaryColor || '#2563eb';
+                return (
+                  <div key={idx} className="relative rounded-lg border border-gray-100 bg-white/60 px-3 py-2.5">
+                    <div
+                      className="absolute inset-y-0 left-0 rounded-lg"
+                      style={{ width: `${pct}%`, backgroundColor: `${base}14` }}
+                    />
+                    <div className="relative flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="text-gray-500 text-xs w-5">{idx + 1}.</span>
+                        <span className="font-medium text-gray-900">{comp.brand}</span>
+                      </div>
+                      <span className="text-sm tabular-nums text-gray-800">
+                        {comp.count} <span className="text-gray-500">co-occurrences</span>
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
