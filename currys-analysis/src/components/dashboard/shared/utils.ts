@@ -9,21 +9,24 @@ export const formatCategory = (category: string) => {
 };
 
 export const providerColor = (provider: string) => {
-  // Map providers to Luminr brand palette (centralized in tailwind.config + theme.ts)
+  // Case-insensitive mapping to Luminr brand palette (centralized in tailwind.config + theme.ts)
+  const p = (provider || '').toLowerCase();
   const map: Record<string, string> = {
-    OpenAI: 'bg-brand-light-purple text-white ring-brand-light-purple',
-    'OpenAI (GPT-4o)': 'bg-brand-light-purple text-white ring-brand-light-purple',
-    Anthropic: 'bg-brand-orange text-white ring-brand-orange',
-    Google: 'bg-brand-purple text-white ring-brand-purple',
-    Gemini: 'bg-brand-purple text-white ring-brand-purple',
-    'Google Gemini': 'bg-brand-purple text-white ring-brand-purple',
-    Microsoft: 'bg-brand-red text-white ring-brand-red',
-    Perplexity: 'bg-brand-dark-purple text-white ring-brand-dark-purple',
-    Meta: 'bg-brand-red text-white ring-brand-red',
-    Cohere: 'bg-brand-light-purple text-white ring-brand-light-purple',
-    Mistral: 'bg-brand-orange text-white ring-brand-orange'
+    openai: 'bg-brand-light-purple text-white ring-brand-light-purple',
+    'openai (gpt-4o)': 'bg-brand-light-purple text-white ring-brand-light-purple',
+    anthropic: 'bg-brand-orange text-white ring-brand-orange',
+    google: 'bg-brand-purple text-white ring-brand-purple',
+    'google ai overview': 'bg-brand-red text-white ring-brand-red',
+    'ai overview': 'bg-brand-red text-white ring-brand-red',
+    gemini: 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light',
+    'google gemini': 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light',
+    microsoft: 'bg-brand-red text-white ring-brand-red',
+    perplexity: 'bg-brand-dark-purple text-white ring-brand-dark-purple',
+    meta: 'bg-brand-red text-white ring-brand-red',
+    cohere: 'bg-brand-light-purple text-white ring-brand-light-purple',
+    mistral: 'bg-brand-orange text-white ring-brand-orange'
   };
-  return map[provider] || 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light';
+  return map[p] || 'bg-brand-gray-light text-brand-dark-purple ring-brand-gray-light';
 };
 
 export const rankBadge = (position: number) => {

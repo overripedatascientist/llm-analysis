@@ -200,6 +200,23 @@ Notes:
 - `brandKeywords` are used to detect the client brand in analyses and color bars accordingly.
 - `dataFile` can be absolute (`/data/acme.json`) for production build consistency.
 
+### Access Control (Landing Page Passwords)
+- Update client access gate whenever you add a new client:
+  - File: `currys-analysis/src/components/LandingPage.tsx`
+  - Add an entry to the `clientPasswords` map using the client's `id` as the key and a unique password string.
+  - Example:
+    ```
+    acme: 'acme-2025',
+    ```
+- Route id vs. dataset filename casing:
+  - Keep the client `id` lowercase for routing (e.g., `manypets` → `/dashboard/manypets`).
+  - If the dataset filename uses different casing (e.g., `ManyPets.json`), set `dataFile` explicitly to match the filename exactly (e.g., `'/data/ManyPets.json'`).
+- Quick validation checklist:
+  - Start dev server (`npm start`)
+  - On the landing page, click the new client card
+  - Enter the configured password and verify navigation to `/dashboard/{clientId}`
+  - Confirm data loads without 404s in the network panel
+
 ---
 
 ## How to Add a New Tab

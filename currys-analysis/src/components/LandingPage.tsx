@@ -123,7 +123,10 @@ const LandingPage: React.FC = () => {
     napier_us: 'fintech-us-2025',
     taggstar: 'social-proof-2025',
     oag: 'aviation-data-2025',
-    secret_sales: 'fashion-outlet-2025'
+    secret_sales: 'fashion-outlet-2025',
+    braidr: 'data-science-2025',
+    disrupt: 'influencer-marketing-2025',
+    manypets: 'pet-insurance-2025'
   };
 
   const handleViewAnalysis = (clientId: string) => {

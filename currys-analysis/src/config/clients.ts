@@ -260,6 +260,45 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#F59E0B',
         brandKeywords: ['secret sales', 'secretsales', 'secret-sales'],
         icon: 'fashion'
+    },
+    'braidr': {
+        id: 'braidr',
+        name: 'braidr',
+        displayName: 'Data Science Consulting Agency',
+        description: 'Data science consulting and analytics services',
+        category: 'Consulting',
+        market: 'Global Consulting',
+        dataFile: '/data/braidr.json',
+        primaryColor: '#0E6EB8',
+        secondaryColor: '#00A1E0',
+        brandKeywords: ['braidr'],
+        icon: 'chart-line'
+    },
+    'disrupt': {
+        id: 'disrupt',
+        name: 'disrupt',
+        displayName: 'Influencer Marketing Agency',
+        description: 'Influencer marketing and creator campaigns',
+        category: 'Marketing',
+        market: 'UK Marketing',
+        dataFile: '/data/disrupt.json',
+        primaryColor: '#FF1E56',
+        secondaryColor: '#2D3142',
+        brandKeywords: ['disrupt', 'disrupt agency'],
+        icon: 'megaphone'
+    },
+    'manypets': {
+        id: 'manypets',
+        name: 'manypets',
+        displayName: 'Pet Insurance Company',
+        description: 'Pet insurance and wellness plans',
+        category: 'Insurance',
+        market: 'UK Insurance',
+        dataFile: '/data/ManyPets.json',
+        primaryColor: '#16A34A',
+        secondaryColor: '#F59E0B',
+        brandKeywords: ['manypets', 'many pets'],
+        icon: 'heart'
     }
 };
 

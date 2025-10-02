@@ -191,6 +191,8 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
       'openai (gpt-4o)': themeBrand.lightPurple,
       anthropic: themeBrand.orange,
       google: themeBrand.purple,
+      'google ai overview': themeBrand.red,
+      'ai overview': themeBrand.red,
       gemini: themeBrand.lightGrey, // make Gemini clearly distinct from OpenAI purple
       'google gemini': themeBrand.lightGrey,
       microsoft: themeBrand.red,
