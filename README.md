@@ -478,3 +478,58 @@ This dashboard helps answer critical business questions:
 ---
 
 **Built with ❤️ by Luminr** | Empowering brands with AI-driven competitive intelligence
+
+## 🔒 Access Control and Sharing
+
+This app supports sharing direct dashboard links per client while gating the navigation back to the landing page with an admin password.
+
+- Share a client dashboard directly:
+  - Send a URL like `/dashboard/digital-realty` (adjust `clientId` accordingly).
+  - The recipient can view the dashboard without a password.
+- “Back to Dashboard Selection” link is admin-gated:
+  - When clicked, users are prompted for the admin password.
+  - Only on correct password will they be allowed to navigate to `/`.
+  - If incorrect (or canceled), they stay on the current dashboard view.
+- Landing page remains public, as requested. Only the in-app “Back to Dashboard Selection” navigation is protected.
+
+### Admin Password Configuration
+
+- Config file: `currys-analysis/src/config/admin.ts`
+- Default: `dashboard-admin-2025`
+- Environment override: set `REACT_APP_ADMIN_PASSWORD`
+  - Example for local dev:
+    - macOS/Linux: `REACT_APP_ADMIN_PASSWORD='your-secret' npm start`
+    - Windows (PowerShell): `$env:REACT_APP_ADMIN_PASSWORD='your-secret'; npm start`
+  - Example for production (build-time):
+    - `REACT_APP_ADMIN_PASSWORD='your-secret' npm run build`
+
+### Code References
+
+- CompetitiveAnalysisDashboard breadcrumb and states:
+  - `currys-analysis/src/components/CompetitiveAnalysisDashboard.tsx`
+  - All three occurrences of the “Back to Dashboard Selection” link (loading, error, main) are guarded.
+- Fallback view in App when `clientId` is not found:
+  - `currys-analysis/src/App.tsx` (guarded back link)
+
+### Validation Checklist
+
+- Open any direct link (e.g., `/dashboard/digital-realty`) and confirm the dashboard is visible.
+- Click “Back to Dashboard Selection”:
+  - Enter the correct admin password → navigates to `/`.
+  - Enter a wrong password or cancel → remains on the dashboard.
+- Optional: set `REACT_APP_ADMIN_PASSWORD` and verify the new password is required after rebuilding/restarting.
+
+## 🏷️ Display Name Conventions (Landing Page)
+
+To improve clarity on the landing page, `displayName` values now follow a consistent pattern:
+
+- Format: `Brand — Descriptor (Region/Variant when applicable)`
+- Examples:
+  - `Currys — UK Consumer Electronics Retailer`
+  - `Digital Realty — Data Centers (US)`
+  - `Napier — FinCrime Compliance (UK/US)`
+  - `Secret Sales — Designer Fashion Outlet`
+
+Update location:
+- File: `currys-analysis/src/config/clients.ts`
+- Field: `displayName` per client

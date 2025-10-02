@@ -218,7 +218,58 @@ Notes:
   - Confirm data loads without 404s in the network panel
 
 ---
+ 
+### Admin Gate for Back Navigation (Dashboard → Landing)
 
+Purpose:
+- Allow sharing a direct client dashboard link (e.g., /dashboard/digital-realty) without a password
+- Require an admin password when a user clicks “← Back to Dashboard Selection” to reach the landing page
+
+What’s protected:
+- Only the in-app “Back to Dashboard Selection” navigation is gated
+- The landing page itself is public; client dashboards remain directly accessible via deep links
+
+Implementation Summary:
+- Admin password config:
+  - File: currys-analysis/src/config/admin.ts
+  - Export: ADMIN_PASSWORD
+  - Default value: 'dashboard-admin-2025'
+  - Build-time override: REACT_APP_ADMIN_PASSWORD
+- Guarded links (prompt + programmatic navigation on success):
+  - currys-analysis/src/components/CompetitiveAnalysisDashboard.tsx
+    - All 3 occurrences of the “Back to Dashboard Selection” link are guarded:
+      - Loading state breadcrumb
+      - Error state breadcrumb
+      - Main breadcrumb
+    - Uses useNavigate and compares input to ADMIN_PASSWORD
+  - currys-analysis/src/App.tsx
+    - Fallback view (when clientId not found) back link is guarded
+
+Environment Configuration:
+- Local dev (POSIX):
+  REACT_APP_ADMIN_PASSWORD='your-secret' npm start
+- Local dev (Windows PowerShell):
+  $env:REACT_APP_ADMIN_PASSWORD='your-secret'; npm start
+- Production build:
+  REACT_APP_ADMIN_PASSWORD='your-secret' npm run build
+
+Validation Checklist:
+- Open a direct dashboard link, e.g., /dashboard/digital-realty → dashboard is visible
+- Click “← Back to Dashboard Selection”:
+  - Correct password → navigates to '/'
+  - Wrong password or cancel → stays on current dashboard
+- Optionally set REACT_APP_ADMIN_PASSWORD and verify the new password is enforced after restart/rebuild
+
+Security Notes:
+- This is a basic UI gate (prompt-based) and not a full authentication system
+- Do not rely on this for sensitive data; use real auth if needed (routes + protected API)
+- Avoid committing real secrets; prefer environment variables for non-default passwords
+
+Related Context:
+- Landing page client-gate remains in currys-analysis/src/components/LandingPage.tsx via clientPasswords map (per-client access when entering a dashboard)
+
+---
+ 
 ## How to Add a New Tab
 
 1) Create a tab component under `src/components/dashboard/tabs/YourTab.tsx`.
