@@ -126,7 +126,9 @@ const LandingPage: React.FC = () => {
     secret_sales: 'fashion-outlet-2025',
     braidr: 'data-science-2025',
     disrupt: 'influencer-marketing-2025',
-    manypets: 'pet-insurance-2025'
+    manypets: 'pet-insurance-2025',
+    seed: 'ai-video-production-2025',
+    peacocks: 'fashion-uk-2025'
   };
 
   const handleViewAnalysis = (clientId: string) => {

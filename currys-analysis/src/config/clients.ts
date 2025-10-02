@@ -299,6 +299,32 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#F59E0B',
         brandKeywords: ['manypets', 'many pets'],
         icon: 'heart'
+    },
+    'seed': {
+        id: 'seed',
+        name: 'seed',
+        displayName: 'AI Video Production Agency',
+        description: 'AI-driven video production and content creation',
+        category: 'Marketing',
+        market: 'Global Marketing',
+        dataFile: '/data/seed.json',
+        primaryColor: '#10B981',
+        secondaryColor: '#111827',
+        brandKeywords: ['seed', 'seed ai'],
+        icon: 'video'
+    },
+    'peacocks': {
+        id: 'peacocks',
+        name: 'peacocks',
+        displayName: 'Fashion Retailer',
+        description: 'Affordable UK fashion retailer',
+        category: 'Fashion',
+        market: 'UK Retail',
+        dataFile: '/data/peacocks.json',
+        primaryColor: '#1E40AF',
+        secondaryColor: '#F59E0B',
+        brandKeywords: ['peacocks'],
+        icon: 'fashion'
     }
 };
 
