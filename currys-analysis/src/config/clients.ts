@@ -294,7 +294,7 @@ export const clients: Record<string, ClientConfig> = {
         description: 'Pet insurance and wellness plans',
         category: 'Insurance',
         market: 'UK Insurance',
-        dataFile: '/data/ManyPets.json',
+        dataFile: '/data/manypets.json',
         primaryColor: '#16A34A',
         secondaryColor: '#F59E0B',
         brandKeywords: ['manypets', 'many pets'],
