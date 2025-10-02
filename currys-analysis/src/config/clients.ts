@@ -17,7 +17,7 @@ export const clients: Record<string, ClientConfig> = {
         id: 'currys',
         name: 'currys',
         // displayName: 'Currys',
-        displayName: 'Consumer Electronics Company',
+        displayName: 'Currys — UK Consumer Electronics Retailer',
         description: 'Consumer Electronics & Tech Retail',
         category: 'Electronics',
         market: 'UK Retail',
@@ -30,7 +30,7 @@ export const clients: Record<string, ClientConfig> = {
     'boux-avenue': {
         id: 'boux-avenue',
         name: 'boux-avenue',
-        displayName: 'Fashion Company',
+        displayName: 'Boux Avenue — Lingerie & Intimates Retailer',
         description: 'Lingerie & Intimate Apparel',
         category: 'Fashion',
         market: 'UK Retail',
@@ -43,7 +43,7 @@ export const clients: Record<string, ClientConfig> = {
     'adnoc': {
         id: 'adnoc',
         name: 'adnoc',
-        displayName: 'Energy Company',
+        displayName: 'ADNOC — UAE National Energy Company',
         description: 'Diversified Energy and Sustainability',
         category: 'Energy',
         market: 'UAE Energy',
@@ -56,7 +56,7 @@ export const clients: Record<string, ClientConfig> = {
     'callisto': {
         id: 'callisto',
         name: 'callisto',
-        displayName: 'Publishing Company',
+        displayName: 'Callisto Media — Consumer Publishing',
         description: 'Consumer-focused Books and Audiobooks',
         category: 'Publishing',
         market: 'US Publishing',
@@ -69,7 +69,7 @@ export const clients: Record<string, ClientConfig> = {
     'sensodyne': {
         id: 'sensodyne',
         name: 'sensodyne',
-        displayName: 'Healthcare Company',
+        displayName: 'Sensodyne — Oral Care Brand',
         description: 'Oral Care & Dental Health Products',
         category: 'Healthcare',
         market: 'Global Healthcare',
@@ -82,7 +82,7 @@ export const clients: Record<string, ClientConfig> = {
     'cvc-capital-partners': {
         id: 'cvc-capital-partners',
         name: 'cvc-capital-partners',
-        displayName: 'Investment Company',
+        displayName: 'CVC Capital Partners — Private Equity',
         description: 'Private Equity & Investment Management',
         category: 'Private Equity',
         market: 'Global Investment',
@@ -95,7 +95,7 @@ export const clients: Record<string, ClientConfig> = {
     'found': {
         id: 'found',
         name: 'found',
-        displayName: 'Marketing Agency',
+        displayName: 'Found — Digital Marketing Agency',
         description: 'Digital Marketing & Creative Services',
         category: 'Marketing',
         market: 'UK Marketing',
@@ -108,7 +108,7 @@ export const clients: Record<string, ClientConfig> = {
     'telehouse': {
         id: 'telehouse',
         name: 'telehouse',
-        displayName: 'Technology Company',
+        displayName: 'Telehouse — Data Centers & Colocation',
         description: 'Data Centers & Colocation Services',
         category: 'Technology',
         market: 'Global Technology',
@@ -121,7 +121,7 @@ export const clients: Record<string, ClientConfig> = {
     'digital-realty': {
         id: 'digital-realty',
         name: 'digital-realty',
-        displayName: 'Data Center Company',
+        displayName: 'Digital Realty — Data Centers (US)',
         description: 'Data Centers & Colocation Services',
         category: 'Technology',
         market: 'US Data Centers',
@@ -134,7 +134,7 @@ export const clients: Record<string, ClientConfig> = {
     'toolstation': {
         id: 'toolstation',
         name: 'toolstation',
-        displayName: 'Retail Company',
+        displayName: 'Toolstation — Trade Tools & Hardware',
         description: 'Tools & Hardware Retail',
         category: 'Retail',
         market: 'UK Retail',
@@ -147,7 +147,7 @@ export const clients: Record<string, ClientConfig> = {
     'pwc': {
         id: 'pwc',
         name: 'pwc',
-        displayName: 'Professional Services Company',
+        displayName: 'PwC — Global Professional Services',
         description: 'Consulting & Professional Services',
         category: 'Professional Services',
         market: 'Global Professional Services',
@@ -160,7 +160,7 @@ export const clients: Record<string, ClientConfig> = {
     'pwc_custom': {
         id: 'pwc_custom',
         name: 'pwc_custom',
-        displayName: 'Professional Services Company (Custom Search)',
+        displayName: 'PwC — Custom Search (Global)',
         description: 'Consulting & Professional Services',
         category: 'Professional Services',
         market: 'Global Professional Services',
@@ -173,7 +173,7 @@ export const clients: Record<string, ClientConfig> = {
     'pwc_custom_us': {
         id: 'pwc_custom_us',
         name: 'pwc_custom_us',
-        displayName: 'Professional Services Company (US Custom Search)',
+        displayName: 'PwC — Custom Search (US)',
         description: 'Consulting & Professional Services',
         category: 'Professional Services',
         market: 'US Professional Services',
@@ -186,7 +186,7 @@ export const clients: Record<string, ClientConfig> = {
     'pwc_us': {
         id: 'pwc_us',
         name: 'pwc_us',
-        displayName: 'Professional Services Company (US)',
+        displayName: 'PwC — US Professional Services',
         description: 'Consulting & Professional Services',
         category: 'Professional Services',
         market: 'US Professional Services',
@@ -199,7 +199,7 @@ export const clients: Record<string, ClientConfig> = {
     'napier_uk': {
         id: 'napier_uk',
         name: 'napier_uk',
-        displayName: 'Fintech Company (UK)',
+        displayName: 'Napier — FinCrime Compliance (UK)',
         description: 'Financial crime compliance and AML platform',
         category: 'FinTech',
         market: 'UK Market',
@@ -212,7 +212,7 @@ export const clients: Record<string, ClientConfig> = {
     'napier_us': {
         id: 'napier_us',
         name: 'napier_us',
-        displayName: 'Fintech Company (US)',
+        displayName: 'Napier — FinCrime Compliance (US)',
         description: 'Financial crime compliance and AML platform',
         category: 'FinTech',
         market: 'US Market',
@@ -225,7 +225,7 @@ export const clients: Record<string, ClientConfig> = {
     'taggstar': {
         id: 'taggstar',
         name: 'taggstar',
-        displayName: 'Social Media Analytics Company',
+        displayName: 'Taggstar — Social Proof for E-commerce',
         description: 'Social proof and product recommendations for e-commerce',
         category: 'Technology',
         market: 'Global E-commerce',
@@ -238,7 +238,7 @@ export const clients: Record<string, ClientConfig> = {
     'oag': {
         id: 'oag',
         name: 'oag',
-        displayName: 'Flight Data Company',
+        displayName: 'OAG — Global Flight Data & Analytics',
         description: 'Global flight data and analytics',
         category: 'Aviation',
         market: 'Global Aviation',
@@ -251,7 +251,7 @@ export const clients: Record<string, ClientConfig> = {
     'secret_sales': {
         id: 'secret_sales',
         name: 'secret_sales',
-        displayName: 'Fashion Outlet',
+        displayName: 'Secret Sales — Designer Fashion Outlet',
         description: 'Designer and premium fashion outlet marketplace',
         category: 'Fashion',
         market: 'UK Retail',
@@ -264,7 +264,7 @@ export const clients: Record<string, ClientConfig> = {
     'braidr': {
         id: 'braidr',
         name: 'braidr',
-        displayName: 'Data Science Consulting Agency',
+        displayName: 'Braidr — Data Science Consultancy',
         description: 'Data science consulting and analytics services',
         category: 'Consulting',
         market: 'Global Consulting',
@@ -277,7 +277,7 @@ export const clients: Record<string, ClientConfig> = {
     'disrupt': {
         id: 'disrupt',
         name: 'disrupt',
-        displayName: 'Influencer Marketing Agency',
+        displayName: 'Disrupt — Influencer Marketing Agency',
         description: 'Influencer marketing and creator campaigns',
         category: 'Marketing',
         market: 'UK Marketing',
@@ -290,7 +290,7 @@ export const clients: Record<string, ClientConfig> = {
     'manypets': {
         id: 'manypets',
         name: 'manypets',
-        displayName: 'Pet Insurance Company',
+        displayName: 'ManyPets — Pet Insurance',
         description: 'Pet insurance and wellness plans',
         category: 'Insurance',
         market: 'UK Insurance',
@@ -303,7 +303,7 @@ export const clients: Record<string, ClientConfig> = {
     'seed': {
         id: 'seed',
         name: 'seed',
-        displayName: 'AI Video Production Agency',
+        displayName: 'Seed — AI Video Production Studio',
         description: 'AI-driven video production and content creation',
         category: 'Marketing',
         market: 'Global Marketing',
@@ -316,7 +316,7 @@ export const clients: Record<string, ClientConfig> = {
     'peacocks': {
         id: 'peacocks',
         name: 'peacocks',
-        displayName: 'Fashion Retailer',
+        displayName: 'Peacocks — Value Fashion Retailer',
         description: 'Affordable UK fashion retailer',
         category: 'Fashion',
         market: 'UK Retail',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import type { ClientConfig } from '../config/clients';
 import { useClientData } from './dashboard/hooks/useClientData';
 import { useProcessedData } from './dashboard/hooks/useProcessedData';
@@ -8,12 +8,14 @@ import CategoryTab from './dashboard/tabs/CategoryTab';
 import ProvidersTab from './dashboard/tabs/ProvidersTab';
 import PositioningTab from './dashboard/tabs/PositioningTab';
 import ArchiveTab from './dashboard/tabs/ArchiveTab';
+import { ADMIN_PASSWORD } from '../config/admin';
 
 interface Props {
   config: ClientConfig;
 }
 
 const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
   const { rawData, loading, error } = useClientData(config);
@@ -27,7 +29,19 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       <div className="p-4">
         <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
           <nav className="text-sm text-left">
-            <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
+            <Link
+              to="/"
+              className="text-brand-purple hover:text-brand-light-purple"
+              onClick={(e) => {
+                e.preventDefault();
+                const pwd = prompt('Enter admin password to access dashboard selection:');
+                if (pwd === ADMIN_PASSWORD) {
+                  navigate('/');
+                } else if (pwd !== null) {
+                  alert('Incorrect password. Please try again.');
+                }
+              }}
+            >
               ← Back to Dashboard Selection
             </Link>
           </nav>
@@ -42,7 +56,19 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       <div className="p-4">
         <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
           <nav className="text-sm text-left">
-            <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
+            <Link
+              to="/"
+              className="text-brand-purple hover:text-brand-light-purple"
+              onClick={(e) => {
+                e.preventDefault();
+                const pwd = prompt('Enter admin password to access dashboard selection:');
+                if (pwd === ADMIN_PASSWORD) {
+                  navigate('/');
+                } else if (pwd !== null) {
+                  alert('Incorrect password. Please try again.');
+                }
+              }}
+            >
               ← Back to Dashboard Selection
             </Link>
           </nav>
@@ -65,7 +91,19 @@ const CompetitiveAnalysisDashboard: React.FC<Props> = ({ config }) => {
       {/* Navigation breadcrumb */}
       <div className="bg-white/60 backdrop-blur ring-1 ring-inset ring-gray-200 px-4 py-2">
         <nav className="text-sm text-left">
-          <Link to="/" className="text-brand-purple hover:text-brand-light-purple">
+          <Link
+            to="/"
+            className="text-brand-purple hover:text-brand-light-purple"
+            onClick={(e) => {
+              e.preventDefault();
+              const pwd = prompt('Enter admin password to access dashboard selection:');
+              if (pwd === ADMIN_PASSWORD) {
+                navigate('/');
+              } else if (pwd !== null) {
+                alert('Incorrect password. Please try again.');
+              }
+            }}
+          >
             ← Back to Dashboard Selection
           </Link>
         </nav>

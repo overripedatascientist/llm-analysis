@@ -1,12 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useParams } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useParams, useNavigate } from 'react-router-dom';
 import LandingPage from './components/LandingPage';
 import CompetitiveAnalysisDashboard from './components/CompetitiveAnalysisDashboard';
 import { getClientConfig } from './config/clients';
 import './App.css';
+import { ADMIN_PASSWORD } from './config/admin';
 
 const DashboardWrapper: React.FC = () => {
   const { clientId } = useParams<{ clientId: string }>();
+  const navigate = useNavigate();
   const config = clientId ? getClientConfig(clientId) : null;
 
   if (!config) {
@@ -16,7 +18,21 @@ const DashboardWrapper: React.FC = () => {
           <strong>Error:</strong> Client "{clientId}" not found.
         </div>
         <p className="mt-4">
-          <a href="/" className="text-blue-600 hover:text-blue-800">← Back to Dashboard Selection</a>
+          <a
+            href="/"
+            className="text-blue-600 hover:text-blue-800"
+            onClick={(e) => {
+              e.preventDefault();
+              const pwd = prompt('Enter admin password to access dashboard selection:');
+              if (pwd === ADMIN_PASSWORD) {
+                navigate('/');
+              } else if (pwd !== null) {
+                alert('Incorrect password. Please try again.');
+              }
+            }}
+          >
+            ← Back to Dashboard Selection
+          </a>
         </p>
       </div>
     );
