@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "https://overripedatascientist.github.io/llm-analysis/static/css/main.2bd0e0c9.css",
-    "main.js": "https://overripedatascientist.github.io/llm-analysis/static/js/main.5328f206.js",
+    "main.js": "https://overripedatascientist.github.io/llm-analysis/static/js/main.afc1ae10.js",
     "static/js/453.09464982.chunk.js": "https://overripedatascientist.github.io/llm-analysis/static/js/453.09464982.chunk.js",
     "index.html": "https://overripedatascientist.github.io/llm-analysis/index.html",
     "main.2bd0e0c9.css.map": "https://overripedatascientist.github.io/llm-analysis/static/css/main.2bd0e0c9.css.map",
-    "main.5328f206.js.map": "https://overripedatascientist.github.io/llm-analysis/static/js/main.5328f206.js.map",
+    "main.afc1ae10.js.map": "https://overripedatascientist.github.io/llm-analysis/static/js/main.afc1ae10.js.map",
     "453.09464982.chunk.js.map": "https://overripedatascientist.github.io/llm-analysis/static/js/453.09464982.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2bd0e0c9.css",
-    "static/js/main.5328f206.js"
+    "static/js/main.afc1ae10.js"
   ]
 }
