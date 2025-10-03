@@ -222,6 +222,19 @@ export const clients: Record<string, ClientConfig> = {
         brandKeywords: ['napier', 'napier ai'],
         icon: 'shield'
     },
+    'napier_custom': {
+        id: 'napier_custom',
+        name: 'napier_custom',
+        displayName: 'Napier — FinCrime Compliance (Custom)',
+        description: 'Financial crime compliance and AML platform',
+        category: 'FinTech',
+        market: 'Global Market',
+        dataFile: '/data/napier_custom.json',
+        primaryColor: '#0E7C86',
+        secondaryColor: '#F2B134',
+        brandKeywords: ['napier', 'napier ai'],
+        icon: 'shield'
+    },
     'taggstar': {
         id: 'taggstar',
         name: 'taggstar',
