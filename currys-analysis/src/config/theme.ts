@@ -24,7 +24,8 @@ export const providerPalette: string[] = [
   brand.purple,
   brand.lightPurple,
   brand.orange,
-  brand.red
+  brand.red,
+  brand.darkPurple
 ];
 
 // Utility to convert hex like #RRGGBB to rgba string

@@ -150,7 +150,7 @@ export function useProcessedData(rawData: any[] | null, brandKeywords: string[])
   const { treemapOption, providerLegend } = useMemo(() => {
     if (!data) return { treemapOption: {}, providerLegend: [] as { name: string; color: string }[] };
 
-    const MAX_PROVIDERS = 4;
+    const MAX_PROVIDERS = 5;
     const MAX_BRANDS_PER_PROVIDER = 12;
     const keywordsLower = (brandKeywords || []).map((k) => k.toLowerCase());
 
