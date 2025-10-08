@@ -129,7 +129,8 @@ const LandingPage: React.FC = () => {
     disrupt: 'influencer-marketing-2025',
     manypets: 'pet-insurance-2025',
     seed: 'ai-video-production-2025',
-    peacocks: 'fashion-uk-2025'
+    peacocks: 'fashion-uk-2025',
+    malkhoenig: 'coffee-grinders-2025'
   };
 
   const handleViewAnalysis = (clientId: string) => {

@@ -338,6 +338,19 @@ export const clients: Record<string, ClientConfig> = {
         secondaryColor: '#F59E0B',
         brandKeywords: ['peacocks'],
         icon: 'fashion'
+    },
+    'malkhoenig': {
+        id: 'malkhoenig',
+        name: 'malkhoenig',
+        displayName: 'Mahlkönig — Professional Coffee Grinders',
+        description: 'Professional coffee grinders and grinding solutions',
+        category: 'Appliances',
+        market: 'Global Coffee Equipment',
+        dataFile: '/data/malkhoenig.json',
+        primaryColor: '#E00034',
+        secondaryColor: '#2D3142',
+        brandKeywords: ['mahlkönig', 'mahlkoenig', 'mahlkonig'],
+        icon: 'chart-line'
     }
 };
 
